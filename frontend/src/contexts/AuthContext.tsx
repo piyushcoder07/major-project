@@ -196,17 +196,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [isInitialized, isInitializing]);
 
   const login = async (credentials: LoginCredentials) => {
-    const { user: userData, token } = await authService.login(credentials);
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData)); // Store user data for persistence
-    setUser(userData);
+    const response = await authService.login(credentials);
+    localStorage.setItem('token', response.token);
+    if (response.refreshToken) {
+      localStorage.setItem('refreshToken', response.refreshToken);
+    }
+    localStorage.setItem('user', JSON.stringify(response.user)); // Store user data for persistence
+    setUser(response.user);
   };
 
   const register = async (data: RegisterData) => {
-    const { user: userData, token } = await authService.register(data);
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData)); // Store user data for persistence
-    setUser(userData);
+    const response = await authService.register(data);
+    localStorage.setItem('token', response.token);
+    if (response.refreshToken) {
+      localStorage.setItem('refreshToken', response.refreshToken);
+    }
+    localStorage.setItem('user', JSON.stringify(response.user)); // Store user data for persistence
+    setUser(response.user);
   };
 
   const logout = async () => {
@@ -216,6 +222,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.error('Logout error:', error);
     } finally {
       localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
       localStorage.removeItem('user'); // Clear user data
       setUser(null);
     }

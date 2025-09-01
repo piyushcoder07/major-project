@@ -4,6 +4,7 @@ import { User, LoginCredentials, RegisterData } from '../types/auth';
 interface AuthResponse {
   user: User;
   token: string;
+  refreshToken?: string;
 }
 
 export const authService = {

@@ -29,15 +29,30 @@ export const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
 
     setIsLoading(true);
     try {
+      // Construct datetime with simple local time (no timezone conversion)
       const datetime = `${selectedDate}T${selectedSlot.startTime}:00`;
+      const appointmentDateTime = new Date(datetime);
+      
+      console.log('🔍 Booking appointment with:', {
+        mentor: mentor.name,
+        mentorId: mentor.id,
+        selectedDate,
+        selectedSlot,
+        constructedDatetime: datetime,
+        localDateTime: appointmentDateTime.toString(),
+        dayOfWeek: appointmentDateTime.toLocaleDateString('en-US', { weekday: 'long' }),
+        time: appointmentDateTime.toTimeString().slice(0, 5)
+      });
+      
       await AppointmentService.createAppointment({
         mentorId: mentor.id,
-        datetime,
+        datetime: datetime, // Send datetime string directly
       });
       
       showSuccess('Appointment request sent successfully!');
       onBookingSuccess?.();
     } catch (error: any) {
+      console.error('❌ Appointment booking error:', error);
       showError(error.message || 'Failed to book appointment');
     } finally {
       setIsLoading(false);
@@ -51,8 +66,15 @@ export const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
     for (let i = 1; i <= 7; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
+      
+      // Use local date formatting to avoid timezone issues
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const dateValue = `${year}-${month}-${day}`;
+      
       dates.push({
-        value: date.toISOString().split('T')[0],
+        value: dateValue,
         label: date.toLocaleDateString('en-US', { 
           weekday: 'long', 
           month: 'short', 
@@ -67,6 +89,14 @@ export const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
 
   const availableDates = getNextWeekDates();
   const availableSlots = mentor.availabilitySlots || [];
+
+  // Add logging for debugging
+  console.log('📋 Mentor availability data:', {
+    mentorName: mentor.name,
+    mentorId: mentor.id,
+    availabilitySlots: availableSlots,
+    availableDates: availableDates
+  });
 
   const getSlotsForSelectedDate = () => {
     if (!selectedDate) return [];

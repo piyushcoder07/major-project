@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { register, login, getMe, logout, refreshToken } from '../controllers/authController';
-import { authenticateToken } from '../middleware/auth';
+import { authenticateWithRefresh } from '../middleware/tokenRefresh';
 import { validateRegistration, validateLogin } from '../middleware/validation';
 import { logoutWithTokenInvalidation } from '../middleware/tokenRefresh';
 import { registrationRateLimit } from '../middleware/rateLimiter';
@@ -14,6 +14,6 @@ router.post('/refresh', refreshToken);
 router.post('/logout', logoutWithTokenInvalidation, logout);
 
 // Protected routes
-router.get('/me', authenticateToken, getMe);
+router.get('/me', authenticateWithRefresh, getMe);
 
 export default router;

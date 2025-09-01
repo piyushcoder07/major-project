@@ -4,6 +4,8 @@ import { TimeSlot } from '../types/database';
 export class AppointmentService {
   // Create a new appointment request
   async createAppointment(menteeId: string, mentorId: string, datetime: Date) {
+    console.log('🎯 Creating appointment:', { menteeId, mentorId, datetime: datetime.toISOString() });
+    
     // Verify mentor exists and has availability
     const mentor = await prisma.user.findUnique({
       where: { id: mentorId, role: 'MENTOR' }
@@ -13,10 +15,16 @@ export class AppointmentService {
       throw new Error('Mentor not found');
     }
 
+    console.log('👨‍🏫 Found mentor:', mentor.name);
+    console.log('📋 Mentor availability slots:', mentor.availabilitySlots);
+
     // Check if mentor has availability for the requested time
     const isAvailable = await this.checkMentorAvailability(mentorId, datetime);
     if (!isAvailable) {
-      throw new Error('Mentor is not available at the requested time');
+      // Get detailed availability info for better error message
+      const availabilityInfo = await this.getMentorAvailableSlots(mentorId);
+      console.log('❌ Mentor not available. Available slots:', availabilityInfo);
+      throw new Error(`Mentor is not available at the requested time. Please check their availability and try a different time slot.`);
     }
 
     // Check for existing appointments at the same time
@@ -69,6 +77,7 @@ export class AppointmentService {
       }
     });
 
+    console.log('✅ Appointment created successfully:', appointment.id);
     return appointment;
   }
 
@@ -328,24 +337,54 @@ export class AppointmentService {
     });
 
     if (!mentor || !mentor.availabilitySlots) {
+      console.log('❌ No mentor or availability slots found');
       return false;
     }
 
     try {
       const availabilitySlots: TimeSlot[] = JSON.parse(mentor.availabilitySlots);
+      
+      // Get the day and time from the requested datetime
+      // Important: Use the date object directly without timezone conversion
       const requestedDay = datetime.toLocaleDateString('en-US', { weekday: 'long' });
       const requestedTime = datetime.toTimeString().slice(0, 5); // HH:MM format
+      
+      console.log(`🔍 Checking availability for mentor ${mentor.name}:`);
+      console.log(`📅 Input datetime: ${datetime.toISOString()}`);
+      console.log(`📅 Local datetime: ${datetime.toString()}`);
+      console.log(`📅 Requested: ${requestedDay} at ${requestedTime}`);
+      console.log('📋 Available slots:', availabilitySlots);
 
       // Check if the requested time falls within any availability slot
-      return availabilitySlots.some(slot => {
-        return slot.day === requestedDay && 
-               requestedTime >= slot.startTime && 
-               requestedTime <= slot.endTime;
+      const isAvailable = availabilitySlots.some(slot => {
+        const isValidDay = slot.day === requestedDay;
+        
+        // Convert times to minutes for proper comparison
+        const requestedTimeMinutes = this.timeToMinutes(requestedTime);
+        const slotStartMinutes = this.timeToMinutes(slot.startTime);
+        const slotEndMinutes = this.timeToMinutes(slot.endTime);
+        
+        const isValidTime = requestedTimeMinutes >= slotStartMinutes && requestedTimeMinutes < slotEndMinutes;
+        
+        console.log(`🔍 Checking slot: ${slot.day} ${slot.startTime}-${slot.endTime}`);
+        console.log(`   Day match: ${isValidDay}, Time comparison: ${requestedTime}(${requestedTimeMinutes}min) vs ${slot.startTime}(${slotStartMinutes}min)-${slot.endTime}(${slotEndMinutes}min) = ${isValidTime}`);
+        
+        return isValidDay && isValidTime;
       });
+      
+      console.log(`✨ Final availability result: ${isAvailable}`);
+      
+      return isAvailable;
     } catch (error) {
-      console.error('Error parsing availability slots:', error);
+      console.error('❌ Error parsing availability slots:', error);
       return false;
     }
+  }
+
+  // Helper method to convert HH:MM time to minutes for comparison
+  private timeToMinutes(timeString: string): number {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    return hours * 60 + minutes;
   }
 
   // Get mentor's available time slots (excluding booked appointments)

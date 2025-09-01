@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import { appointmentController } from '../controllers/appointmentController';
-import { authenticateToken } from '../middleware/auth';
+import { authenticateWithRefresh } from '../middleware/tokenRefresh';
 import { validateAppointmentCreation, validateAppointmentId } from '../middleware/validation';
 import { appointmentRateLimit } from '../middleware/rateLimiter';
 
 const router = Router();
 
-// All appointment routes require authentication
-router.use(authenticateToken);
+// All appointment routes require authentication with refresh capability
+router.use(authenticateWithRefresh);
 
 // Create a new appointment request (mentee only)
 router.post('/', appointmentRateLimit, validateAppointmentCreation, appointmentController.createAppointment);

@@ -3,7 +3,14 @@
   "version": "1.0.0",
   "description": "A comprehensive mentorship platform connecting mentors and mentees with real-time communication, appointment management, and rating system",
   "private": true,
-  "keywords": ["mentorship", "education", "react", "nodejs", "socket.io", "real-time"],
+  "keywords": [
+    "mentorship",
+    "education",
+    "react",
+    "nodejs",
+    "socket.io",
+    "real-time"
+  ],
   "author": "Your Name",
   "license": "MIT",
   "repository": {
@@ -42,5 +49,9 @@
   "workspaces": [
     "frontend",
     "backend"
-  ]
+  ],
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "sqlite3": "^5.1.7"
+  }
 }

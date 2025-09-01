@@ -18,6 +18,7 @@ export interface LoginData {
 export interface AuthResponse {
   user: UserWithoutPassword;
   token: string;
+  refreshToken: string;
 }
 
 export interface RefreshResponse {
@@ -100,7 +101,8 @@ export const registerUser = async (data: RegisterData): Promise<AuthResponse> =>
 
   return { 
     user: userWithTypedRole, 
-    token: tokens.accessToken
+    token: tokens.accessToken,
+    refreshToken: tokens.refreshToken
   };
 };
 
@@ -139,7 +141,8 @@ export const loginUser = async (data: LoginData): Promise<AuthResponse> => {
 
   return { 
     user: userWithTypedRole, 
-    token: tokens.accessToken
+    token: tokens.accessToken,
+    refreshToken: tokens.refreshToken
   };
 };
 

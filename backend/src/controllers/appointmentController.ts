@@ -8,6 +8,8 @@ export class AppointmentController {
       const { mentorId, datetime } = req.body;
       const menteeId = req.user!.userId;
 
+      console.log('🔍 Appointment creation request:', { mentorId, datetime, menteeId });
+
       // Validate required fields
       if (!mentorId || !datetime) {
         return res.status(400).json({
@@ -53,6 +55,12 @@ export class AppointmentController {
         });
       }
 
+      console.log('📅 Parsed appointment date:', appointmentDate.toISOString());
+      console.log('� Parsed appointment date (local):', appointmentDate.toString());
+      console.log('�🗓️ Day of week:', appointmentDate.toLocaleDateString('en-US', { weekday: 'long' }));
+      console.log('⏰ Time:', appointmentDate.toTimeString().slice(0, 5));
+      console.log('🌍 Timezone offset:', appointmentDate.getTimezoneOffset());
+
       const appointment = await appointmentService.createAppointment(
         menteeId,
         mentorId,
@@ -65,7 +73,7 @@ export class AppointmentController {
         message: 'Appointment request created successfully'
       });
     } catch (error: any) {
-      console.error('Error creating appointment:', error);
+      console.error('❌ Error creating appointment:', error.message);
       res.status(400).json({
         success: false,
         error: {

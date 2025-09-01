@@ -1,10 +1,14 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosInstance, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { ApiResponse, ApiException } from '../types/api';
 
 interface RetryConfig {
   retries: number;
   retryDelay: number;
   retryCondition?: (error: AxiosError) => boolean;
+}
+
+interface RetryableAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
 }
 
 class ApiClient {
@@ -49,12 +53,44 @@ class ApiClient {
       }
     );
 
-    // Response interceptor for error handling
+    // Response interceptor for error handling and token refresh
     this.client.interceptors.response.use(
       (response: AxiosResponse<ApiResponse<any>>) => {
+        // Check for token refresh in response headers
+        const newToken = response.headers['x-new-access-token'];
+        if (newToken) {
+          localStorage.setItem('token', newToken);
+        }
         return response;
       },
-      (error: AxiosError<ApiResponse<any>>) => {
+      async (error: AxiosError<ApiResponse<any>>) => {
+        const originalRequest = error.config as RetryableAxiosRequestConfig;
+
+        // Check if this is a 401 error and we haven't already tried to refresh
+        if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+          originalRequest._retry = true;
+
+          try {
+            // Try to refresh the token
+            const newToken = await this.refreshToken();
+            if (newToken) {
+              // Update the authorization header and retry the request
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+              return this.client.request(originalRequest);
+            }
+          } catch (refreshError) {
+            // Refresh failed, redirect to login
+            localStorage.removeItem('token');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
+            if (!window.location.pathname.includes('/login') && 
+                !window.location.pathname.includes('/register')) {
+              window.location.replace('/login');
+            }
+            return Promise.reject(refreshError);
+          }
+        }
+
         return this.handleError(error);
       }
     );
@@ -107,13 +143,15 @@ class ApiClient {
           case 401:
             message = error.response.data?.error?.message || 'Authentication required';
             code = error.response.data?.error?.code || 'UNAUTHORIZED';
-            // Only clear token and redirect if this is NOT a login attempt
-            if (!error.config?.url?.includes('/auth/login')) {
+            // Only clear token and redirect if this is NOT a login attempt and we're not already on auth pages
+            if (!error.config?.url?.includes('/auth/login') && 
+                !error.config?.url?.includes('/auth/register') &&
+                !window.location.pathname.includes('/login') && 
+                !window.location.pathname.includes('/register')) {
               localStorage.removeItem('token');
-              if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
-                // Use replace to avoid adding to history and prevent back button issues
-                window.location.replace('/login');
-              }
+              localStorage.removeItem('user');
+              // Use replace to avoid adding to history and prevent back button issues
+              window.location.replace('/login');
             }
             break;
           case 403:
@@ -264,6 +302,33 @@ class ApiClient {
       return true;
     } catch {
       return false;
+    }
+  }
+
+  // Method to refresh token
+  async refreshToken(): Promise<string | null> {
+    try {
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (!refreshToken) {
+        return null;
+      }
+
+      const response = await this.client.post<ApiResponse<{ accessToken: string }>>('/auth/refresh', {
+        refreshToken
+      });
+
+      if (response.data.success && response.data.data?.accessToken) {
+        const newToken = response.data.data.accessToken;
+        localStorage.setItem('token', newToken);
+        return newToken;
+      }
+      return null;
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('user');
+      return null;
     }
   }
 }
