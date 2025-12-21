@@ -9,7 +9,6 @@ interface MessageThreadProps {
   isLoading?: boolean;
   isSending?: boolean;
   otherUserName?: string;
-  isReadOnly?: boolean;
   appointmentStatus?: string;
 }
 
@@ -19,7 +18,6 @@ export const MessageThread: React.FC<MessageThreadProps> = ({
   isLoading = false,
   isSending = false,
   otherUserName = 'User',
-  isReadOnly = false,
   appointmentStatus
 }) => {
   const [newMessage, setNewMessage] = useState('');
