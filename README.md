@@ -106,8 +106,8 @@ A comprehensive mentorship platform connecting mentors and mentees for meaningfu
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/mentor-connect.git
-   cd mentor-connect
+   git clone https://github.com/piyushcoder07/major-project.git
+   cd major-project
    ```
 
 2. **Install dependencies**
@@ -177,6 +177,14 @@ A comprehensive mentorship platform connecting mentors and mentees for meaningfu
 - **Email:** admin@example.com
 - **Password:** admin123
 - **Role:** Administrator
+### **Default Demo Accounts (seeded)**
+- **Admins:**
+   - `admin@mentorconnect.com` / `admin123`
+   - `support@mentorconnect.com` / `admin123`
+- **Mentors (all use `mentor123`):**
+   - `john.doe@techcorp.com`, `sarah.wilson@datatech.ai`, `mike.chen@mobiledev.com`, `lisa.garcia@cloudtech.com`, `david.kim@cybersec.org`, `anna.petrov@uxdesign.studio`
+- **Mentees (all use `mentee123`):**
+   - `alice.johnson@university.edu`, `bob.smith@stateuni.edu`, `emma.davis@techcollege.edu`, `carlos.rodriguez@community.edu`, `priya.patel@bootcamp.tech`, `james.wilson@artschool.edu`, `sophia.lee@highschool.edu
 
 ## 📁 **Project Structure**
 
