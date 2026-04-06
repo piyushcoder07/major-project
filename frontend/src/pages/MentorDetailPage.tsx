@@ -124,37 +124,37 @@ export const MentorDetailPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="animate-pulse">
           <div className="mb-6">
-            <div className="h-8 bg-gray-200 rounded w-32 mb-4"></div>
+            <div className="mb-4 h-8 w-32 rounded bg-slate-200"></div>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+              <div className="surface-card p-6">
                 <div className="flex items-start gap-4 mb-6">
-                  <div className="w-20 h-20 bg-gray-200 rounded-full"></div>
+                  <div className="h-20 w-20 rounded-full bg-slate-200"></div>
                   <div className="flex-1">
-                    <div className="h-6 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                    <div className="mb-2 h-6 rounded bg-slate-200"></div>
+                    <div className="mb-2 h-4 w-2/3 rounded bg-slate-200"></div>
+                    <div className="h-4 w-1/2 rounded bg-slate-200"></div>
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <div className="h-4 bg-gray-200 rounded"></div>
-                  <div className="h-4 bg-gray-200 rounded"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                  <div className="h-4 rounded bg-slate-200"></div>
+                  <div className="h-4 rounded bg-slate-200"></div>
+                  <div className="h-4 w-3/4 rounded bg-slate-200"></div>
                 </div>
               </div>
             </div>
             <div>
-              <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-                <div className="h-6 bg-gray-200 rounded mb-4"></div>
+              <div className="surface-card p-6">
+                <div className="mb-4 h-6 rounded bg-slate-200"></div>
                 <div className="space-y-2">
-                  <div className="h-4 bg-gray-200 rounded"></div>
-                  <div className="h-4 bg-gray-200 rounded"></div>
-                  <div className="h-4 bg-gray-200 rounded"></div>
+                  <div className="h-4 rounded bg-slate-200"></div>
+                  <div className="h-4 rounded bg-slate-200"></div>
+                  <div className="h-4 rounded bg-slate-200"></div>
                 </div>
               </div>
             </div>
@@ -166,9 +166,9 @@ export const MentorDetailPage: React.FC = () => {
 
   if (!mentor) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Mentor not found</h1>
+          <h1 className="mb-4 text-2xl font-bold text-slate-900">Mentor not found</h1>
           <Button onClick={handleBackToSearch}>Back to Search</Button>
         </div>
       </div>
@@ -179,7 +179,7 @@ export const MentorDetailPage: React.FC = () => {
   const canBookAppointment = user?.role === 'MENTEE' && hasAvailableSlots;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Back Button */}
       <div className="mb-6">
         <Button
@@ -194,36 +194,36 @@ export const MentorDetailPage: React.FC = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Main Content */}
         <div className="lg:col-span-2">
           <Card>
             <CardContent>
               {/* Header */}
               <div className="flex items-start gap-4 mb-6">
-                <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-blue-600 font-bold text-2xl">
+                <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-2xl bg-brand-100">
+                  <span className="text-2xl font-bold text-brand-700">
                     {mentor.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
                 <div className="flex-1">
-                  <h1 className="text-2xl font-bold text-gray-900 mb-2">{mentor.name}</h1>
+                  <h1 className="mb-2 text-2xl font-bold text-slate-900">{mentor.name}</h1>
                   <div className="flex items-center gap-3 mb-2">
                     {mentor.ratingAverage && (
                       <>
                         <div className="flex items-center">
                           {renderStars(mentor.ratingAverage)}
                         </div>
-                        <span className="text-gray-600">
+                        <span className="font-medium text-slate-600">
                           ({mentor.ratingAverage.toFixed(1)} rating)
                         </span>
                       </>
                     )}
                     {!mentor.ratingAverage && (
-                      <span className="text-gray-500">No ratings yet</span>
+                      <span className="text-slate-500">No ratings yet</span>
                     )}
                   </div>
-                  <p className="text-gray-600">
+                  <p className="text-slate-600">
                     {mentor.yearsExperience} years of experience
                   </p>
                 </div>
@@ -232,20 +232,20 @@ export const MentorDetailPage: React.FC = () => {
               {/* Bio */}
               {mentor.bio && (
                 <div className="mb-6">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-3">About</h2>
-                  <p className="text-gray-700 leading-relaxed">{mentor.bio}</p>
+                  <h2 className="mb-3 text-lg font-semibold text-slate-900">About</h2>
+                  <p className="leading-relaxed text-slate-700">{mentor.bio}</p>
                 </div>
               )}
 
               {/* Expertise */}
               {mentor.expertise && (
                 <div className="mb-6">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-3">Expertise</h2>
+                  <h2 className="mb-3 text-lg font-semibold text-slate-900">Expertise</h2>
                   <div className="flex flex-wrap gap-2">
                     {mentor.expertise.split(',').map((skill, index) => (
                       <span
                         key={index}
-                        className="inline-block px-3 py-1 text-sm font-medium bg-blue-100 text-blue-800 rounded-full"
+                        className="inline-block rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-sm font-semibold text-brand-700"
                       >
                         {skill.trim()}
                       </span>
@@ -256,8 +256,8 @@ export const MentorDetailPage: React.FC = () => {
 
               {/* Contact */}
               <div className="mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-3">Contact</h2>
-                <p className="text-gray-700">{mentor.email}</p>
+                <h2 className="mb-3 text-lg font-semibold text-slate-900">Contact</h2>
+                <p className="text-slate-700">{mentor.email}</p>
               </div>
             </CardContent>
           </Card>
@@ -284,10 +284,10 @@ export const MentorDetailPage: React.FC = () => {
                   {mentor.availabilitySlots!.map((slot, index) => (
                     <div
                       key={index}
-                      className="flex items-center gap-2 p-2 bg-green-50 rounded-md"
+                      className="flex items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 p-2.5"
                     >
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span className="text-sm text-gray-700">
+                      <div className="h-2.5 w-2.5 rounded-full bg-emerald-500"></div>
+                      <span className="text-sm font-medium text-slate-700">
                         {formatTimeSlot(slot)}
                       </span>
                     </div>
@@ -295,8 +295,8 @@ export const MentorDetailPage: React.FC = () => {
                 </div>
               ) : (
                 <div className="text-center py-4">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full mx-auto mb-2"></div>
-                  <p className="text-sm text-gray-500">No available slots</p>
+                  <div className="mx-auto mb-2 h-2 w-2 rounded-full bg-slate-400"></div>
+                  <p className="text-sm text-slate-500">No available slots</p>
                 </div>
               )}
             </CardContent>
@@ -313,7 +313,7 @@ export const MentorDetailPage: React.FC = () => {
                 >
                   Book a Session
                 </Button>
-                <p className="text-xs text-gray-500 mt-2 text-center">
+                <p className="mt-2 text-center text-xs text-slate-500">
                   Schedule a mentoring session with {mentor.name}
                 </p>
               </CardContent>
@@ -330,7 +330,7 @@ export const MentorDetailPage: React.FC = () => {
                 >
                   No Available Slots
                 </Button>
-                <p className="text-xs text-gray-500 mt-2 text-center">
+                <p className="mt-2 text-center text-xs text-slate-500">
                   This mentor is currently not available for booking
                 </p>
               </CardContent>
@@ -340,7 +340,7 @@ export const MentorDetailPage: React.FC = () => {
           {user?.role !== 'MENTEE' && (
             <Card>
               <CardContent>
-                <p className="text-sm text-gray-600 text-center">
+                <p className="text-center text-sm text-slate-600">
                   Only mentees can book sessions with mentors
                 </p>
               </CardContent>

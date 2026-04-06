@@ -14,6 +14,8 @@ export const MentorCard: React.FC<MentorCardProps> = ({
   onViewDetails,
   onBookAppointment,
 }) => {
+  const halfFillId = `half-fill-${mentor.id}`;
+
   const renderStars = (rating: number) => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -39,13 +41,13 @@ export const MentorCard: React.FC<MentorCardProps> = ({
           viewBox="0 0 20 20"
         >
           <defs>
-            <linearGradient id="half-fill">
+            <linearGradient id={halfFillId}>
               <stop offset="50%" stopColor="currentColor" />
               <stop offset="50%" stopColor="transparent" />
             </linearGradient>
           </defs>
           <path
-            fill="url(#half-fill)"
+            fill={`url(#${halfFillId})`}
             d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"
           />
         </svg>
@@ -71,42 +73,42 @@ export const MentorCard: React.FC<MentorCardProps> = ({
   const hasAvailableSlots = mentor.availabilitySlots && mentor.availabilitySlots.length > 0;
 
   return (
-    <Card className="hover:shadow-md transition-shadow duration-200">
+    <Card className="group transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card">
       <CardContent>
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 font-semibold text-lg">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="mb-3 flex items-center gap-3">
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-brand-100">
+                <span className="text-lg font-semibold text-brand-700">
                   {mentor.name.charAt(0).toUpperCase()}
                 </span>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">{mentor.name}</h3>
+              <div className="min-w-0">
+                <h3 className="truncate text-lg font-semibold text-slate-900">{mentor.name}</h3>
                 <div className="flex items-center gap-2">
                   {mentor.ratingAverage && (
                     <>
                       <div className="flex items-center">
                         {renderStars(mentor.ratingAverage)}
                       </div>
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm font-medium text-slate-600">
                         ({mentor.ratingAverage.toFixed(1)})
                       </span>
                     </>
                   )}
                   {!mentor.ratingAverage && (
-                    <span className="text-sm text-gray-500">No ratings yet</span>
+                    <span className="text-sm text-slate-500">No ratings yet</span>
                   )}
                 </div>
               </div>
             </div>
 
             <div className="mb-3">
-              <p className="text-sm text-gray-600 mb-2">
+              <p className="mb-2 text-sm font-medium text-slate-600">
                 {mentor.yearsExperience} years of experience
               </p>
               {mentor.bio && (
-                <p className="text-sm text-gray-700 line-clamp-2">{mentor.bio}</p>
+                <p className="line-clamp-2 text-sm text-slate-700">{mentor.bio}</p>
               )}
             </div>
 
@@ -120,13 +122,13 @@ export const MentorCard: React.FC<MentorCardProps> = ({
                       {displaySkills.map((skill, index) => (
                         <span
                           key={index}
-                          className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full"
+                          className="inline-block rounded-full border border-brand-100 bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700"
                         >
                           {skill}
                         </span>
                       ))}
                       {skills.length > 3 && (
-                        <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
+                        <span className="inline-block rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
                           +{skills.length - 3} more
                         </span>
                       )}
@@ -139,16 +141,16 @@ export const MentorCard: React.FC<MentorCardProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div
-                  className={`w-2 h-2 rounded-full ${
-                    hasAvailableSlots ? 'bg-green-400' : 'bg-gray-400'
+                  className={`h-2.5 w-2.5 rounded-full ${
+                    hasAvailableSlots ? 'bg-emerald-500' : 'bg-slate-400'
                   }`}
                 />
-                <span className="text-sm text-gray-600">
+                <span className="text-sm font-medium text-slate-600">
                   {hasAvailableSlots ? 'Available' : 'No slots available'}
                 </span>
               </div>
               
-              <div className="flex gap-2">
+              <div className="flex gap-2 opacity-95 transition-opacity duration-200 group-hover:opacity-100">
                 <Button
                   variant="outline"
                   size="sm"

@@ -36,12 +36,12 @@ export const FormField: React.FC<FormFieldProps> = ({
   autoComplete,
 }) => {
   const baseInputClasses = `
-    block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 
-    focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-    disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
+    block w-full px-3.5 py-2.5 rounded-xl border bg-white/90 shadow-sm placeholder:text-slate-400
+    focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500
+    disabled:bg-slate-100/70 disabled:text-slate-500 disabled:cursor-not-allowed
     ${error 
-      ? 'border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500' 
-      : 'border-gray-300 text-gray-900'
+      ? 'border-red-300 text-red-900 placeholder:text-red-300 focus:ring-red-500 focus:border-red-500' 
+      : 'border-slate-300/90 text-slate-900'
     }
   `;
 
@@ -109,8 +109,8 @@ export const FormField: React.FC<FormFieldProps> = ({
   };
 
   return (
-    <div className={`space-y-1 ${className}`}>
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+    <div className={`space-y-1.5 ${className}`}>
+      <label htmlFor={name} className="block text-sm font-semibold text-slate-700">
         {label}
         {required && <span className="text-red-500 ml-1" aria-label="required">*</span>}
       </label>
@@ -118,13 +118,13 @@ export const FormField: React.FC<FormFieldProps> = ({
       {renderInput()}
       
       {error && (
-        <p id={`${name}-error`} className="text-sm text-red-600" role="alert">
+        <p id={`${name}-error`} className="text-sm font-medium text-red-600" role="alert">
           {error}
         </p>
       )}
       
       {helpText && !error && (
-        <p id={`${name}-help`} className="text-sm text-gray-500">
+        <p id={`${name}-help`} className="text-sm text-slate-500">
           {helpText}
         </p>
       )}

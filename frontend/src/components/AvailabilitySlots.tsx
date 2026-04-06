@@ -91,12 +91,12 @@ export const AvailabilitySlots: React.FC<AvailabilitySlotsProps> = ({
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="mb-2 block text-sm font-semibold text-slate-700">
           Availability Slots
         </label>
         
         {/* Add new slot form */}
-        <Card className="mb-4">
+        <Card className="mb-4 border-slate-200/80 bg-slate-50/70">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <Select
               label="Day"
@@ -135,23 +135,23 @@ export const AvailabilitySlots: React.FC<AvailabilitySlotsProps> = ({
             </Button>
           </div>
           {newSlotError && (
-            <p className="mt-2 text-sm text-red-600">{newSlotError}</p>
+            <p className="mt-2 text-sm font-medium text-red-600">{newSlotError}</p>
           )}
         </Card>
 
         {/* Display existing slots */}
         {safeSlots.length > 0 && (
           <div className="space-y-2">
-            <h4 className="text-sm font-medium text-gray-700">Current Availability:</h4>
+            <h4 className="text-sm font-semibold text-slate-700">Current Availability:</h4>
             {safeSlots.map((slot, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-md"
+                className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3"
               >
                 <span className="text-sm">
-                  <span className="font-medium">{slot.day}</span>
+                  <span className="font-semibold text-slate-900">{slot.day}</span>
                   {' '}
-                  <span className="text-gray-600">
+                  <span className="text-slate-600">
                     {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
                   </span>
                 </span>
@@ -169,13 +169,13 @@ export const AvailabilitySlots: React.FC<AvailabilitySlotsProps> = ({
         )}
 
         {slots.length === 0 && (
-          <p className="text-sm text-gray-500 italic">
+          <p className="text-sm italic text-slate-500">
             No availability slots added yet. Add at least one slot to complete your profile.
           </p>
         )}
 
         {error && (
-          <p className="mt-1 text-sm text-red-600">{error}</p>
+          <p className="mt-1 text-sm font-medium text-red-600">{error}</p>
         )}
       </div>
     </div>

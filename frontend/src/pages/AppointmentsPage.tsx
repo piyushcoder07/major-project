@@ -92,10 +92,10 @@ export const AppointmentsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="surface-card flex flex-col justify-between gap-4 p-5 sm:flex-row sm:items-center sm:p-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Appointments</h1>
-          <p className="text-gray-600">
+          <h1 className="text-2xl font-bold text-slate-900">My Appointments</h1>
+          <p className="mt-1 text-slate-600">
             Manage your {user?.role === 'MENTOR' ? 'mentoring' : 'mentee'} sessions
           </p>
         </div>
@@ -105,7 +105,7 @@ export const AppointmentsPage: React.FC = () => {
       </div>
 
       {/* Status Filter */}
-      <Card className="p-4">
+      <Card className="p-4 sm:p-5">
         <div className="flex flex-wrap gap-2">
           {statusOptions.map((option) => (
             <Button
@@ -126,25 +126,25 @@ export const AppointmentsPage: React.FC = () => {
       </Card>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card className="p-4">
-          <h3 className="text-sm font-medium text-gray-500">Upcoming Sessions</h3>
-          <p className="text-2xl font-bold text-blue-600">{getUpcomingAppointments().length}</p>
+          <h3 className="text-sm font-semibold text-slate-500">Upcoming Sessions</h3>
+          <p className="text-2xl font-bold text-brand-600">{getUpcomingAppointments().length}</p>
         </Card>
         <Card className="p-4">
-          <h3 className="text-sm font-medium text-gray-500">Pending Requests</h3>
-          <p className="text-2xl font-bold text-yellow-600">{getPendingRequests().length}</p>
+          <h3 className="text-sm font-semibold text-slate-500">Pending Requests</h3>
+          <p className="text-2xl font-bold text-amber-600">{getPendingRequests().length}</p>
         </Card>
         <Card className="p-4">
-          <h3 className="text-sm font-medium text-gray-500">Completed Sessions</h3>
-          <p className="text-2xl font-bold text-green-600">{getCompletedAppointments().length}</p>
+          <h3 className="text-sm font-semibold text-slate-500">Completed Sessions</h3>
+          <p className="text-2xl font-bold text-emerald-600">{getCompletedAppointments().length}</p>
         </Card>
       </div>
 
       {/* Appointments List */}
       {filteredAppointments.length === 0 ? (
         <Card className="p-8 text-center">
-          <p className="text-gray-500 mb-4">
+          <p className="mb-4 text-slate-500">
             {selectedStatus === 'ALL' 
               ? 'No appointments found' 
               : `No ${selectedStatus.toLowerCase()} appointments`
@@ -157,7 +157,7 @@ export const AppointmentsPage: React.FC = () => {
           )}
         </Card>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {filteredAppointments.map((appointment) => (
             <AppointmentCard
               key={appointment.id}

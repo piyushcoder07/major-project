@@ -11,13 +11,14 @@ interface StatCardProps {
 }
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color }) => (
-  <div className={`bg-white rounded-lg shadow-md p-6 border-l-4 ${color}`}>
-    <div className="flex items-center justify-between">
+  <div className={`rounded-2xl border border-slate-200 bg-white p-5 shadow-soft`}>
+    <div className={`mb-4 h-1.5 w-12 rounded-full ${color.replace('border-l-', 'bg-')}`} />
+    <div className="flex items-center justify-between gap-3">
       <div>
-        <p className="text-sm font-medium text-gray-600">{title}</p>
-        <p className="text-2xl font-bold text-gray-900">{value}</p>
+        <p className="text-sm font-semibold text-slate-500">{title}</p>
+        <p className="text-2xl font-bold text-slate-900">{value}</p>
       </div>
-      <div className={`text-3xl ${color.replace('border-l-', 'text-')}`}>
+      <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 text-2xl ${color.replace('border-l-', 'text-')}`}>
         {icon}
       </div>
     </div>
@@ -48,7 +49,7 @@ export const AdminDashboard: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="h-12 w-12 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600"></div>
       </div>
     );
   }
@@ -56,7 +57,7 @@ export const AdminDashboard: React.FC = () => {
   if (!stats) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-500">Failed to load dashboard statistics</p>
+        <p className="text-slate-500">Failed to load dashboard statistics</p>
       </div>
     );
   }
@@ -64,12 +65,13 @@ export const AdminDashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Admin Dashboard</h2>
+        <h2 className="mb-2 text-2xl font-bold text-slate-900">Admin Dashboard</h2>
+        <p className="text-sm text-slate-600">Snapshot of platform health and activity.</p>
       </div>
 
       {/* User Statistics */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">User Statistics</h3>
+        <h3 className="mb-4 text-lg font-semibold text-slate-800">User Statistics</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             title="Total Users"
@@ -100,7 +102,7 @@ export const AdminDashboard: React.FC = () => {
 
       {/* Appointment Statistics */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Appointment Statistics</h3>
+        <h3 className="mb-4 text-lg font-semibold text-slate-800">Appointment Statistics</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             title="Total Appointments"

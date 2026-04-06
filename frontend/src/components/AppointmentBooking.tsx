@@ -108,15 +108,19 @@ export const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
   };
 
   return (
-    <Card className="p-6">
-      <h3 className="text-lg font-semibold mb-4">Book Appointment with {mentor.name}</h3>
+    <Card className="p-0 border-0 shadow-none bg-transparent">
+      <div className="space-y-5">
+        <div>
+          <h3 className="text-xl font-semibold text-slate-900">Book with {mentor.name}</h3>
+          <p className="mt-1 text-sm text-slate-600">Choose a date and time that fits both schedules.</p>
+        </div>
       
       {/* Date Selection */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-slate-700">
           Select Date
         </label>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
           {availableDates.map((date) => (
             <button
               key={date.value}
@@ -126,31 +130,31 @@ export const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
               }}
               className={`p-3 text-sm border rounded-lg transition-colors ${
                 selectedDate === date.value
-                  ? 'bg-blue-500 text-white border-blue-500'
-                  : 'bg-white text-gray-700 border-gray-300 hover:border-blue-300'
+                    ? 'border-brand-600 bg-brand-600 text-white shadow-crisp'
+                    : 'border-slate-300 bg-white text-slate-700 hover:border-brand-300 hover:bg-brand-50/40'
               }`}
             >
               {date.label}
             </button>
           ))}
+          </div>
         </div>
-      </div>
 
       {/* Time Slot Selection */}
       {selectedDate && (
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-slate-700">
             Select Time Slot
           </label>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
             {getSlotsForSelectedDate().map((slot, index) => (
               <button
                 key={index}
                 onClick={() => setSelectedSlot(slot)}
                 className={`p-3 text-sm border rounded-lg transition-colors ${
                   selectedSlot === slot
-                    ? 'bg-blue-500 text-white border-blue-500'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-blue-300'
+                      ? 'border-brand-600 bg-brand-600 text-white shadow-crisp'
+                      : 'border-slate-300 bg-white text-slate-700 hover:border-brand-300 hover:bg-brand-50/40'
                 }`}
               >
                 {slot.startTime} - {slot.endTime}
@@ -159,7 +163,7 @@ export const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
           </div>
           
           {getSlotsForSelectedDate().length === 0 && (
-            <p className="text-gray-500 text-sm">
+            <p className="mt-2 text-sm text-slate-500">
               No available slots for this date
             </p>
           )}
@@ -167,24 +171,25 @@ export const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
       )}
 
       {/* Action Buttons */}
-      <div className="flex gap-3">
-        <Button
-          onClick={handleBookAppointment}
-          disabled={!selectedSlot || !selectedDate || isLoading}
-          isLoading={isLoading}
-          className="flex-1"
-        >
-          Book Appointment
-        </Button>
-        {onCancel && (
+        <div className="flex flex-wrap gap-3 border-t border-slate-200 pt-4">
           <Button
-            variant="outline"
-            onClick={onCancel}
-            disabled={isLoading}
+            onClick={handleBookAppointment}
+            disabled={!selectedSlot || !selectedDate || isLoading}
+            isLoading={isLoading}
+            className="flex-1"
           >
-            Cancel
+            Book Appointment
           </Button>
-        )}
+          {onCancel && (
+            <Button
+              variant="outline"
+              onClick={onCancel}
+              disabled={isLoading}
+            >
+              Cancel
+            </Button>
+          )}
+        </div>
       </div>
     </Card>
   );

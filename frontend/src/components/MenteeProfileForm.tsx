@@ -69,8 +69,8 @@ export const MenteeProfileForm: React.FC<MenteeProfileFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {submitError && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <p className="text-sm text-red-600">{submitError}</p>
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4">
+          <p className="text-sm font-medium text-red-600">{submitError}</p>
         </div>
       )}
 
@@ -123,11 +123,11 @@ export const MenteeProfileForm: React.FC<MenteeProfileFormProps> = ({
               name="goals"
               rows={4}
               className={`
-                block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                block w-full rounded-xl border bg-white px-3.5 py-2.5 text-slate-800 shadow-sm placeholder:text-slate-400
+                focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500
                 ${errors.goals 
-                  ? 'border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500' 
-                  : 'border-gray-300'
+                  ? 'border-red-300 text-red-900 placeholder:text-red-300 focus:ring-red-500 focus:border-red-500' 
+                  : 'border-slate-300'
                 }
               `}
               value={values.goals}
@@ -138,13 +138,13 @@ export const MenteeProfileForm: React.FC<MenteeProfileFormProps> = ({
             />
             <div className="flex justify-between mt-1">
               {errors.goals ? (
-                <p className="text-sm text-red-600">{errors.goals}</p>
+                <p className="text-sm font-medium text-red-600">{errors.goals}</p>
               ) : (
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   Be specific about your goals to help mentors understand how they can best help you.
                 </p>
               )}
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-slate-400">
                 {values.goals.length}/300
               </p>
             </div>
@@ -152,18 +152,18 @@ export const MenteeProfileForm: React.FC<MenteeProfileFormProps> = ({
         </div>
       </div>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+      <div className="rounded-2xl border border-brand-100 bg-brand-50 p-4">
         <div className="flex">
           <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="h-5 w-5 text-brand-500" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
             </svg>
           </div>
           <div className="ml-3">
-            <h3 className="text-sm font-medium text-blue-800">
+            <h3 className="text-sm font-semibold text-brand-900">
               Tips for a great profile
             </h3>
-            <div className="mt-2 text-sm text-blue-700">
+            <div className="mt-2 text-sm text-brand-800">
               <ul className="list-disc list-inside space-y-1">
                 <li>Be specific about your current level and what you want to achieve</li>
                 <li>Mention any particular challenges you're facing</li>

@@ -70,7 +70,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   return (
     <div className="w-full" ref={dropdownRef}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="mb-1.5 block text-sm font-semibold text-slate-700">
           {label}
         </label>
       )}
@@ -79,11 +79,12 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         {/* Selected items display */}
         <div
           className={`
-            min-h-[42px] w-full px-3 py-2 border rounded-md shadow-sm cursor-pointer
-            focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500
+            min-h-[46px] w-full cursor-pointer rounded-xl border bg-white/90 px-3.5 py-2.5 shadow-sm
+            transition-colors duration-200
+            focus-within:ring-2 focus-within:ring-brand-500 focus-within:border-brand-500
             ${error 
               ? 'border-red-300 focus-within:ring-red-500 focus-within:border-red-500' 
-              : 'border-gray-300'
+              : 'border-slate-300/90'
             }
           `}
           onClick={() => {
@@ -95,13 +96,13 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         >
           <div className="flex flex-wrap gap-1">
             {value.length === 0 && !isOpen && (
-              <span className="text-gray-400 text-sm">{placeholder}</span>
+              <span className="text-sm text-slate-400">{placeholder}</span>
             )}
             
             {getSelectedLabels().map((label, index) => (
               <span
                 key={value[index]}
-                className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800"
+                className="inline-flex items-center rounded-lg border border-brand-100 bg-brand-50 px-2 py-1 text-xs font-semibold text-brand-700"
               >
                 {label}
                 <button
@@ -110,7 +111,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                     e.stopPropagation();
                     handleRemoveOption(value[index]);
                   }}
-                  className="ml-1 text-blue-600 hover:text-blue-800"
+                  className="ml-1 text-brand-600 hover:text-brand-800"
                 >
                   ×
                 </button>
@@ -121,7 +122,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
               <input
                 ref={inputRef}
                 type="text"
-                className="flex-1 min-w-[120px] outline-none text-sm"
+                className="min-w-[120px] flex-1 bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400"
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -133,9 +134,9 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
 
         {/* Dropdown */}
         {isOpen && (
-          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+          <div className="absolute z-20 mt-1.5 max-h-60 w-full overflow-auto rounded-xl border border-slate-200 bg-white p-1 shadow-card">
             {filteredOptions.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-gray-500">
+              <div className="px-3 py-2 text-sm text-slate-500">
                 {searchTerm ? 'No options found' : 'All options selected'}
               </div>
             ) : (
@@ -143,16 +144,14 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                 <button
                   key={option.value}
                   type="button"
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                  className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-100 focus:bg-slate-100 focus:outline-none"
                   onClick={() => handleToggleOption(option.value)}
                   disabled={!!(maxSelections && value.length >= maxSelections)}
                 >
-                  <div className="flex items-center justify-between">
-                    <span>{option.label}</span>
-                    {maxSelections && value.length >= maxSelections && (
-                      <span className="text-xs text-gray-400">Max reached</span>
-                    )}
-                  </div>
+                  <span>{option.label}</span>
+                  {maxSelections && value.length >= maxSelections && (
+                    <span className="text-xs text-slate-400">Max reached</span>
+                  )}
                 </button>
               ))
             )}
@@ -161,17 +160,17 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
       </div>
 
       {maxSelections && (
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-slate-500">
           {value.length}/{maxSelections} selected
         </p>
       )}
 
       {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
+        <p className="mt-1 text-sm font-medium text-red-600">{error}</p>
       )}
       
       {helperText && !error && (
-        <p className="mt-1 text-sm text-gray-500">{helperText}</p>
+        <p className="mt-1 text-sm text-slate-500">{helperText}</p>
       )}
     </div>
   );

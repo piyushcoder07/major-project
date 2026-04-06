@@ -126,13 +126,14 @@ export const MessagingPage: React.FC = () => {
   );
 
   return (
-    <div className="h-[calc(100vh-7rem)] sm:h-[calc(100vh-7rem)]">
-      <div className="h-full bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <div className="flex h-full">
+    <div className="h-[calc(100vh-7.5rem)] sm:h-[calc(100vh-8rem)]">
+      <div className="h-full overflow-hidden rounded-2xl border border-slate-200/80 bg-white/90 shadow-soft backdrop-blur-sm">
+        <div className="flex h-full flex-col md:flex-row">
         {/* Conversations sidebar */}
-        <div className="w-1/3 border-r border-gray-200 flex flex-col">
-          <div className="p-4 border-b border-gray-200 bg-gray-50">
-            <h1 className="text-lg font-semibold text-gray-900">Messages</h1>
+        <div className={`flex flex-1 flex-col border-b border-slate-200 md:w-[340px] md:flex-none md:border-b-0 md:border-r ${selectedConversation ? 'hidden md:flex' : 'flex'}`}>
+          <div className="border-b border-slate-200 bg-slate-50/80 p-4">
+            <h1 className="text-lg font-semibold text-slate-900">Messages</h1>
+            <p className="mt-1 text-xs text-slate-500">Your active mentorship conversations</p>
           </div>
           <div className="flex-1 overflow-hidden">
             <ConversationList
@@ -145,7 +146,7 @@ export const MessagingPage: React.FC = () => {
         </div>
 
         {/* Message thread */}
-        <div className="flex-1 flex flex-col">
+        <div className={`flex-1 flex-col ${selectedConversation ? 'flex' : 'hidden md:flex'}`}>
           {selectedConversation ? (
             <MessageThread
               messages={messages}
@@ -154,15 +155,16 @@ export const MessagingPage: React.FC = () => {
               isSending={isSendingMessage}
               otherUserName={selectedConversation.otherUser.name}
               appointmentStatus={selectedConversation.appointment.status}
+              onBack={() => setSelectedConversationId('')}
             />
           ) : (
-            <div className="flex-1 flex items-center justify-center text-gray-500">
+            <div className="flex flex-1 items-center justify-center text-slate-500">
               <div className="text-center">
                 <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Select a conversation</h3>
-                <p className="text-gray-500">Choose a conversation from the list to start messaging</p>
+                <h3 className="mb-2 text-lg font-semibold text-slate-900">Select a conversation</h3>
+                <p className="text-slate-500">Choose a conversation from the list to start messaging</p>
               </div>
             </div>
           )}

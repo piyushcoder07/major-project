@@ -49,13 +49,14 @@ export const Pagination: React.FC<PaginationProps> = ({
   const visiblePages = getVisiblePages();
 
   return (
-    <div className="flex items-center justify-center space-x-1">
+    <nav className="flex flex-wrap items-center justify-center gap-1.5" aria-label="Pagination">
       <Button
         variant="outline"
         size="sm"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1 || isLoading}
-        className="px-3 py-1"
+        className="px-2.5"
+        aria-label="Previous page"
       >
         <svg
           className="w-4 h-4"
@@ -82,7 +83,9 @@ export const Pagination: React.FC<PaginationProps> = ({
               size="sm"
               onClick={() => onPageChange(page as number)}
               disabled={isLoading}
-              className="px-3 py-1 min-w-[2.5rem]"
+              className="min-w-[2.4rem] px-2.5"
+              aria-label={`Page ${page}`}
+              aria-current={currentPage === page ? 'page' : undefined}
             >
               {page}
             </Button>
@@ -95,7 +98,8 @@ export const Pagination: React.FC<PaginationProps> = ({
         size="sm"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages || isLoading}
-        className="px-3 py-1"
+        className="px-2.5"
+        aria-label="Next page"
       >
         <svg
           className="w-4 h-4"
@@ -111,6 +115,6 @@ export const Pagination: React.FC<PaginationProps> = ({
           />
         </svg>
       </Button>
-    </div>
+    </nav>
   );
 };

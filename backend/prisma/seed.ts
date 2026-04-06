@@ -1,7 +1,23 @@
+import 'dotenv/config';
+import { execSync } from 'child_process';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
-const prisma = new PrismaClient();
+function createPrismaClient(): PrismaClient {
+  try {
+    return new PrismaClient();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.includes('@prisma/client did not initialize yet')) {
+      console.log('Prisma Client is not generated yet. Running `npx prisma generate`...');
+      execSync('npx prisma generate', { stdio: 'inherit' });
+      return new PrismaClient();
+    }
+    throw error;
+  }
+}
+
+const prisma = createPrismaClient();
 
 async function main() {
   console.log('🌱 Starting comprehensive demonstration database seed...');

@@ -79,8 +79,8 @@ BCRYPT_ROUNDS=12
 ### 2. Environment Variables
 Add these in Vercel:
 ```
-VITE_API_URL=https://YOUR-BACKEND-URL.onrender.com/api
-VITE_SOCKET_URL=https://YOUR-BACKEND-URL.onrender.com
+VITE_API_URL=https://major-project-8sxh.onrender.com/api 
+VITE_SOCKET_URL=https://major-project-8sxh.onrender.com
 ```
 
 ### 3. Deploy & Verify

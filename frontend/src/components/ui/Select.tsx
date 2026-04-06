@@ -23,26 +23,31 @@ export const Select: React.FC<SelectProps> = ({
   id,
   ...props
 }) => {
-  const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
+  const generatedId = React.useId();
+  const selectId = id || generatedId;
+  const hintId = error ? `${selectId}-error` : helperText ? `${selectId}-helper` : undefined;
 
   return (
-    <div className="w-full">
+    <div className="w-full space-y-1.5">
       {label && (
         <label
           htmlFor={selectId}
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-semibold text-slate-700"
         >
           {label}
         </label>
       )}
       <select
         id={selectId}
+        aria-invalid={Boolean(error)}
+        aria-describedby={hintId}
         className={`
-          block w-full px-3 py-2 border rounded-md shadow-sm 
-          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+          block w-full rounded-xl border bg-white/90 px-3.5 py-2.5 text-slate-800 shadow-sm transition-colors duration-200
+          focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500
+          disabled:cursor-not-allowed disabled:bg-slate-100/70 disabled:text-slate-500
           ${error 
             ? 'border-red-300 text-red-900 focus:ring-red-500 focus:border-red-500' 
-            : 'border-gray-300'
+            : 'border-slate-300/90'
           }
           ${className}
         `}
@@ -60,10 +65,10 @@ export const Select: React.FC<SelectProps> = ({
         ))}
       </select>
       {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
+        <p id={`${selectId}-error`} className="text-sm font-medium text-red-600">{error}</p>
       )}
       {helperText && !error && (
-        <p className="mt-1 text-sm text-gray-500">{helperText}</p>
+        <p id={`${selectId}-helper`} className="text-sm text-slate-500">{helperText}</p>
       )}
     </div>
   );

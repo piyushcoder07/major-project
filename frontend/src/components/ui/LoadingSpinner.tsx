@@ -10,13 +10,17 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   className = '' 
 }) => {
   const sizeClasses = {
-    sm: 'w-4 h-4',
-    md: 'w-6 h-6',
-    lg: 'w-8 h-8'
+    sm: 'w-4 h-4 border-2',
+    md: 'w-6 h-6 border-2',
+    lg: 'w-8 h-8 border-[3px]'
   };
 
   return (
-    <div className={`spinner ${sizeClasses[size]} ${className}`} />
+    <div
+      className={`inline-block animate-spin rounded-full border-slate-200 border-t-brand-600 ${sizeClasses[size]} ${className}`}
+      role="status"
+      aria-label="Loading"
+    />
   );
 };
 
@@ -38,7 +42,7 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
       <div className={`flex items-center justify-center p-8 ${className}`}>
         <div className="flex flex-col items-center space-y-2">
           <LoadingSpinner size="lg" />
-          <p className="text-gray-500 text-sm">{loadingText}</p>
+          <p className="text-sm font-medium text-slate-500">{loadingText}</p>
         </div>
       </div>
     );
@@ -69,13 +73,14 @@ export const ButtonLoading: React.FC<ButtonLoadingProps> = ({
       type={type}
       onClick={onClick}
       disabled={disabled || isLoading}
+      aria-busy={isLoading}
       className={`relative ${className} ${
         isLoading || disabled ? 'opacity-75 cursor-not-allowed' : ''
       }`}
     >
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <LoadingSpinner size="sm" className="text-current" />
+          <LoadingSpinner size="sm" />
         </div>
       )}
       <span className={isLoading ? 'invisible' : 'visible'}>
@@ -89,7 +94,7 @@ export const SkeletonLoader: React.FC<{ className?: string }> = ({
   className = '' 
 }) => {
   return (
-    <div className={`animate-pulse bg-gray-200 rounded ${className}`} />
+    <div className={`animate-pulse rounded-lg bg-slate-200 ${className}`} />
   );
 };
 

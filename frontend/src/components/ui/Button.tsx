@@ -16,29 +16,26 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200';
+  const baseClasses = 'inline-flex items-center justify-center gap-2 rounded-xl font-semibold tracking-tight transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-55 disabled:cursor-not-allowed disabled:pointer-events-none';
   
   const variantClasses = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
-    secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
-    outline: 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500',
-    ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-blue-500',
+    primary: 'bg-brand-600 text-white shadow-crisp hover:bg-brand-700 hover:-translate-y-0.5 hover:shadow-soft active:translate-y-0',
+    secondary: 'bg-slate-100 text-slate-800 hover:bg-slate-200',
+    danger: 'bg-red-600 text-white hover:bg-red-700 shadow-crisp',
+    outline: 'border border-slate-300 bg-white/95 text-slate-700 hover:bg-slate-50',
+    ghost: 'text-slate-700 hover:bg-slate-100',
   };
 
   const sizeClasses = {
-    sm: 'px-3 py-2 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base',
+    sm: 'h-9 px-3 text-xs',
+    md: 'h-10 px-4 text-sm',
+    lg: 'h-12 px-5 text-base',
   };
-
-  const disabledClasses = 'opacity-50 cursor-not-allowed';
 
   const classes = [
     baseClasses,
     variantClasses[variant],
     sizeClasses[size],
-    (disabled || isLoading) && disabledClasses,
     className,
   ].filter(Boolean).join(' ');
 
@@ -46,11 +43,12 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       className={classes}
       disabled={disabled || isLoading}
+      aria-busy={isLoading}
       {...props}
     >
       {isLoading && (
         <svg
-          className="animate-spin -ml-1 mr-2 h-4 w-4"
+          className="h-4 w-4 animate-spin"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -64,7 +62,7 @@ export const Button: React.FC<ButtonProps> = ({
             strokeWidth="4"
           ></circle>
           <path
-            className="opacity-75"
+            className="opacity-85"
             fill="currentColor"
             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
           ></path>

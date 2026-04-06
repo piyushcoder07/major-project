@@ -9,49 +9,64 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
   const { removeToast } = useToast();
 
   const getToastStyles = () => {
-    const baseStyles = 'flex items-start p-4 rounded-lg shadow-xl border w-full transform transition-all duration-300 ease-in-out animate-slideInRight backdrop-blur-sm';
+    const baseStyles = 'w-full rounded-2xl border bg-white/95 p-4 shadow-card backdrop-blur-sm transform transition-all duration-300 ease-out animate-slideInRight';
     
     switch (toast.type) {
       case 'success':
-        return `${baseStyles} bg-green-50/95 border-l-4 border-l-green-400 border-green-200`;
+        return `${baseStyles} border-emerald-200`;
       case 'error':
-        return `${baseStyles} bg-red-50/95 border-l-4 border-l-red-400 border-red-200`;
+        return `${baseStyles} border-red-200`;
       case 'warning':
-        return `${baseStyles} bg-yellow-50/95 border-l-4 border-l-yellow-400 border-yellow-200`;
+        return `${baseStyles} border-amber-200`;
       case 'info':
-        return `${baseStyles} bg-blue-50/95 border-l-4 border-l-blue-400 border-blue-200`;
+        return `${baseStyles} border-brand-200`;
       default:
-        return `${baseStyles} bg-gray-50/95 border-l-4 border-l-gray-400 border-gray-200`;
+        return `${baseStyles} border-slate-200`;
     }
   };
 
   const getIconColor = () => {
     switch (toast.type) {
       case 'success':
-        return 'text-green-400';
+        return 'text-emerald-500';
       case 'error':
-        return 'text-red-400';
+        return 'text-red-500';
       case 'warning':
-        return 'text-yellow-400';
+        return 'text-amber-500';
       case 'info':
-        return 'text-blue-400';
+        return 'text-brand-500';
       default:
-        return 'text-gray-400';
+        return 'text-slate-400';
     }
   };
 
   const getTextColor = () => {
     switch (toast.type) {
       case 'success':
-        return 'text-green-800';
+        return 'text-emerald-900';
       case 'error':
-        return 'text-red-800';
+        return 'text-red-900';
       case 'warning':
-        return 'text-yellow-800';
+        return 'text-amber-900';
       case 'info':
-        return 'text-blue-800';
+        return 'text-brand-900';
       default:
-        return 'text-gray-800';
+        return 'text-slate-800';
+    }
+  };
+
+  const getAccentStyle = () => {
+    switch (toast.type) {
+      case 'success':
+        return 'bg-emerald-500';
+      case 'error':
+        return 'bg-red-500';
+      case 'warning':
+        return 'bg-amber-500';
+      case 'info':
+        return 'bg-brand-500';
+      default:
+        return 'bg-slate-400';
     }
   };
 
@@ -87,30 +102,33 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
   };
 
   return (
-    <div className={getToastStyles()} style={{ minHeight: '60px' }}>
-      <div className={`flex-shrink-0 ${getIconColor()}`}>
-        {getIcon()}
-      </div>
-      <div className="ml-3 w-0 flex-1">
-        <p className={`text-sm font-medium ${getTextColor()} leading-5`}>
-          {toast.title}
-        </p>
-        {toast.message && (
-          <p className={`mt-1 text-sm ${getTextColor()} opacity-90 leading-5`}>
-            {toast.message}
+    <div className={getToastStyles()} style={{ minHeight: '68px' }} role="alert" aria-live="polite">
+      <div className="flex items-start gap-3">
+        <span className={`mt-0.5 h-8 w-1 rounded-full ${getAccentStyle()}`} aria-hidden="true" />
+        <div className={`flex-shrink-0 ${getIconColor()}`}>
+          {getIcon()}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className={`text-sm font-semibold ${getTextColor()} leading-5`}>
+            {toast.title}
           </p>
-        )}
-      </div>
-      <div className="ml-4 flex-shrink-0 flex">
-        <button
-          className={`inline-flex ${getTextColor()} hover:opacity-75 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded p-1`}
-          onClick={() => removeToast(toast.id)}
-        >
-          <span className="sr-only">Close</span>
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-          </svg>
-        </button>
+          {toast.message && (
+            <p className={`mt-1 text-sm ${getTextColor()} opacity-90 leading-5`}>
+              {toast.message}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-shrink-0">
+          <button
+            className={`inline-flex rounded-full p-1 ${getTextColor()} hover:bg-slate-100/80 hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500`}
+            onClick={() => removeToast(toast.id)}
+          >
+            <span className="sr-only">Close</span>
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -122,14 +140,14 @@ export const ToastContainer: React.FC = () => {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-4 max-w-sm min-w-[300px] pointer-events-none sm:bottom-6 sm:right-6 max-sm:bottom-4 max-sm:right-4 max-sm:left-4 max-sm:max-w-none">
+    <div className="fixed bottom-4 right-4 left-4 z-[9999] flex flex-col gap-3 pointer-events-none sm:left-auto sm:bottom-6 sm:right-6 sm:max-w-sm sm:min-w-[320px]">
       {toasts.map((toast, index) => (
         <div 
           key={toast.id} 
           className="pointer-events-auto"
           style={{ 
             zIndex: 9999 - index,
-            marginBottom: index < toasts.length - 1 ? '8px' : '0'
+            marginBottom: index < toasts.length - 1 ? '6px' : '0'
           }}
         >
           <Toast toast={toast} />

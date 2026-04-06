@@ -81,15 +81,15 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
   const getStatusColor = (status: AppointmentStatus): string => {
     switch (status) {
       case 'REQUESTED':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-amber-50 text-amber-700 border border-amber-100';
       case 'ACCEPTED':
-        return 'bg-green-100 text-green-800';
+        return 'bg-emerald-50 text-emerald-700 border border-emerald-100';
       case 'COMPLETED':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-brand-50 text-brand-700 border border-brand-100';
       case 'CANCELLED':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-50 text-red-700 border border-red-100';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-slate-100 text-slate-700 border border-slate-200';
     }
   };
 
@@ -149,13 +149,13 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
   const { date, time } = formatDateTime(appointment.datetime);
 
   return (
-    <Card className="p-4 hover:shadow-md transition-shadow">
+    <Card className="p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card">
       <div className="flex justify-between items-start mb-3">
         <div className="flex-1">
-          <h3 className="font-semibold text-lg">
+          <h3 className="text-lg font-semibold text-slate-900">
             {isMentor ? 'Session with' : 'Session with'} {otherUser.name}
           </h3>
-          <p className="text-gray-600 text-sm">
+          <p className="text-sm text-slate-600">
             {isMentor ? 'Mentee' : 'Mentor'}: {otherUser.email}
           </p>
         </div>
@@ -165,10 +165,10 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
       </div>
 
       <div className="mb-4">
-        <p className="text-sm text-gray-700 mb-1">
+        <p className="mb-1 text-sm text-slate-700">
           <span className="font-medium">Date:</span> {date}
         </p>
-        <p className="text-sm text-gray-700">
+        <p className="text-sm text-slate-700">
           <span className="font-medium">Time:</span> {time}
         </p>
       </div>
@@ -176,7 +176,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
       {/* Mentor-specific information */}
       {!isMentor && appointment.mentor.expertise && (
         <div className="mb-4">
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-slate-700">
             <span className="font-medium">Expertise:</span> {appointment.mentor.expertise.split(',').join(', ')}
           </p>
         </div>
@@ -184,20 +184,20 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
 
       {/* Rating Display for Completed Appointments */}
       {appointment.status === 'COMPLETED' && existingRating && (
-        <div className="mb-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+        <div className="mb-4 rounded-xl border border-amber-100 bg-amber-50 p-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-900 mb-1">
+              <p className="mb-1 text-sm font-semibold text-slate-900">
                 Your Rating
               </p>
               <div className="flex items-center space-x-2">
                 <StarRating rating={existingRating.score} size="sm" />
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-slate-600">
                   {existingRating.score} star{existingRating.score !== 1 ? 's' : ''}
                 </span>
               </div>
               {existingRating.comments && (
-                <p className="text-sm text-gray-700 mt-2 italic">
+                <p className="mt-2 text-sm italic text-slate-700">
                   "{existingRating.comments}"
                 </p>
               )}
@@ -247,7 +247,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             variant="outline"
             onClick={() => handleStatusUpdate('cancel')}
             disabled={isLoading}
-            className="text-red-600 border-red-300 hover:bg-red-50"
+            className="border-red-300 text-red-600 hover:bg-red-50"
           >
             Cancel
           </Button>
@@ -259,7 +259,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             size="sm"
             variant="outline"
             onClick={() => setIsRatingModalOpen(true)}
-            className="text-yellow-600 border-yellow-300 hover:bg-yellow-50"
+            className="border-amber-300 text-amber-700 hover:bg-amber-50"
           >
             Rate Session
           </Button>
@@ -271,9 +271,9 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             size="sm"
             variant="outline"
             onClick={handleOpenChat}
-            className="text-blue-600 border-blue-300 hover:bg-blue-50"
+            className="border-brand-300 text-brand-700 hover:bg-brand-50"
           >
-            💬 Chat
+            Chat
           </Button>
         )}
         

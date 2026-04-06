@@ -44,30 +44,35 @@ export const Layout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm border-b">
+    <div className="min-h-screen">
+      <nav className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+          <div className="flex h-[4.5rem] justify-between">
             <div className="flex items-center">
-              <Link to="/" className="text-xl font-bold text-blue-600">
-                Mentor Connect
+              <Link to="/" className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 transition-colors hover:bg-brand-50">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-brand-700">
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4l2.4 4.8L19 11l-4.6 2.2L12 18l-2.4-4.8L5 11l4.6-2.2L12 4z" />
+                  </svg>
+                </span>
+                <span className="font-display text-xl font-semibold tracking-tight text-slate-900">Mentor Connect</span>
               </Link>
             </div>
             
             {user && (
               <>
                 {/* Desktop Navigation */}
-                <div className="hidden md:flex items-center space-x-4">
+                <div className="hidden items-center space-x-1 md:flex">
                   <Link
                     to="/profile"
-                    className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                    className="rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900"
                   >
                     Profile
                   </Link>
                   {user.role !== 'ADMIN' && (
                     <Link
                       to="/appointments"
-                      className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                      className="rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900"
                     >
                       Appointments
                     </Link>
@@ -76,11 +81,11 @@ export const Layout: React.FC = () => {
                     <Link
                       to="/messages"
                       onClick={handleMessagesClick}
-                      className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium relative transition-colors duration-200"
+                      className="relative rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900"
                     >
                       Messages
                       {totalUnreadCount > 0 && (
-                        <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full animate-pulse">
+                        <span className="absolute -right-1 -top-1 inline-flex min-w-[1.35rem] items-center justify-center rounded-full bg-brand-600 px-1.5 py-1 text-[10px] font-bold leading-none text-white shadow-crisp animate-pulse-slow">
                           {totalUnreadCount > 99 ? '99+' : totalUnreadCount}
                         </span>
                       )}
@@ -89,7 +94,7 @@ export const Layout: React.FC = () => {
                   {user.role === 'MENTEE' && (
                     <Link
                       to="/mentors"
-                      className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                      className="rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900"
                     >
                       Find Mentors
                     </Link>
@@ -97,21 +102,21 @@ export const Layout: React.FC = () => {
                   {user.role === 'ADMIN' && (
                     <Link
                       to="/admin"
-                      className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                      className="rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900"
                     >
                       Admin Panel
                     </Link>
                   )}
-                  <div className="flex items-center space-x-2 pl-4 border-l border-gray-200">
+                  <div className="ml-2 flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-slate-50/85 px-3 py-1.5">
                     <div className="text-right">
-                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                      <div className="text-xs text-gray-500 capitalize">
+                      <div className="text-sm font-semibold text-slate-900">{user.name}</div>
+                      <div className="text-xs font-medium text-slate-500 capitalize">
                         {user.role?.toLowerCase() || 'user'}
                       </div>
                     </div>
                     <button
                       onClick={handleLogout}
-                      className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                      className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition-colors duration-200 hover:bg-slate-200/70 hover:text-slate-900"
                     >
                       Logout
                     </button>
@@ -122,7 +127,7 @@ export const Layout: React.FC = () => {
                 <div className="md:hidden flex items-center">
                   <button
                     onClick={toggleMobileMenu}
-                    className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-colors duration-200"
+                    className="inline-flex items-center justify-center rounded-xl border border-slate-200/80 bg-white/90 p-2 text-slate-500 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-brand-500"
                     aria-expanded="false"
                   >
                     <span className="sr-only">Open main menu</span>
@@ -143,11 +148,11 @@ export const Layout: React.FC = () => {
 
           {/* Mobile Navigation Menu */}
           {user && isMobileMenuOpen && (
-            <div className="md:hidden animate-fade-in">
-              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-                <div className="px-3 py-2 border-b border-gray-100 mb-2">
-                  <div className="text-base font-medium text-gray-900">{user.name}</div>
-                  <div className="text-sm text-gray-500 capitalize">
+            <div className="md:hidden animate-fade-in pb-3">
+              <div className="app-shell mt-2 space-y-1.5 px-2.5 py-3 sm:px-3">
+                <div className="mb-1 rounded-xl border border-slate-200/80 bg-slate-50/80 px-3 py-2.5">
+                  <div className="text-base font-semibold text-slate-900">{user.name}</div>
+                  <div className="text-sm text-slate-500 capitalize">
                     {user.role?.toLowerCase() || 'user'}
                   </div>
                 </div>
@@ -179,7 +184,7 @@ export const Layout: React.FC = () => {
                   >
                     <span>Messages</span>
                     {totalUnreadCount > 0 && (
-                      <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
+                      <span className="inline-flex min-w-[1.35rem] items-center justify-center rounded-full bg-brand-600 px-1.5 py-1 text-[10px] font-bold leading-none text-white">
                         {totalUnreadCount > 99 ? '99+' : totalUnreadCount}
                       </span>
                     )}
@@ -218,7 +223,7 @@ export const Layout: React.FC = () => {
         </div>
       </nav>
       
-      <main className="max-w-7xl mx-auto py-4 px-4 sm:py-6 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
         <div className="animate-fade-in">
           <Outlet />
         </div>

@@ -12,14 +12,12 @@ export const ProfilePage: React.FC = () => {
   const { success, error: showError } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log('ProfilePage - Current user data:', user);
-
   if (!user || !user.role) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900">Loading Profile...</h2>
-          <p className="text-gray-600">Please wait while we load your profile information.</p>
+          <h2 className="text-xl font-semibold text-slate-900">Loading Profile...</h2>
+          <p className="text-slate-600">Please wait while we load your profile information.</p>
         </div>
       </div>
     );
@@ -30,19 +28,14 @@ export const ProfilePage: React.FC = () => {
     try {
       const updatedUser = await userService.updateProfile(profileData);
       
-      // Log the response for debugging
-      console.log('Profile update response:', updatedUser);
-      
       // Ensure the updated user has the required fields
       if (updatedUser && updatedUser.id && updatedUser.email) {
         updateUser(updatedUser);
         success('Profile updated successfully!');
       } else {
-        console.error('Invalid user data received:', updatedUser);
         throw new Error('Invalid response from server - user data incomplete');
       }
     } catch (error: any) {
-      console.error('Profile update error:', error);
       showError(error.message || 'Failed to update profile');
       throw error;
     } finally {
@@ -60,16 +53,16 @@ export const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="mx-auto max-w-5xl px-4 py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Profile Settings</h1>
-        <p className="text-gray-600 mt-2">
+      <div className="surface-card mb-8 p-6 sm:p-7">
+        <h1 className="section-heading text-2xl sm:text-3xl">Profile Settings</h1>
+        <p className="section-subheading">
           Manage your {getRoleDisplayName(user.role)?.toLowerCase() || 'user'} profile and preferences
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-7 lg:grid-cols-3">
         {/* Profile Completion Indicator */}
         <div className="lg:col-span-1">
           <ProfileCompletionIndicator user={user} />
@@ -80,26 +73,26 @@ export const ProfilePage: React.FC = () => {
               <CardTitle>Account Information</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
+              <div className="space-y-3.5">
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Email</label>
-                  <p className="text-sm text-gray-900">{user.email}</p>
+                  <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Email</label>
+                  <p className="text-sm font-medium text-slate-900">{user.email}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Role</label>
-                  <p className="text-sm text-gray-900">{getRoleDisplayName(user.role)}</p>
+                  <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Role</label>
+                  <p className="text-sm font-medium text-slate-900">{getRoleDisplayName(user.role)}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Member Since</label>
-                  <p className="text-sm text-gray-900">
+                  <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Member Since</label>
+                  <p className="text-sm font-medium text-slate-900">
                     {new Date().toLocaleDateString()} {/* This would come from user.createdAt in real app */}
                   </p>
                 </div>
                 {user.role === 'MENTOR' && user.ratingAverage && (
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Average Rating</label>
+                    <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Average Rating</label>
                     <div className="flex items-center">
-                      <span className="text-sm text-gray-900 mr-1">
+                      <span className="mr-1 text-sm font-medium text-slate-900">
                         {user.ratingAverage.toFixed(1)}
                       </span>
                       <div className="flex text-yellow-400">
@@ -146,7 +139,7 @@ export const ProfilePage: React.FC = () => {
                 />
               ) : (
                 <div className="text-center py-8">
-                  <p className="text-gray-500">
+                  <p className="text-slate-500">
                     Profile management is not available for administrators.
                   </p>
                 </div>

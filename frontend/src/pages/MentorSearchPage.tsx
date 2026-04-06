@@ -94,19 +94,19 @@ export const MentorSearchPage: React.FC = () => {
   const hasActiveFilters = searchQuery.trim() || selectedExpertise.length > 0 || availableOnly;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Find a Mentor</h1>
-        <p className="text-gray-600">
+    <div className="py-2 sm:py-4">
+      <div className="surface-card mb-6 p-6 sm:p-7">
+        <h1 className="section-heading text-2xl sm:text-3xl">Find a Mentor</h1>
+        <p className="section-subheading">
           Connect with experienced mentors who can guide you in your learning journey
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
         {/* Filters Sidebar */}
         <div className="lg:col-span-1">
-          <div className="sticky top-6 space-y-4">
-            <div>
+          <div className="sticky top-24 space-y-4">
+            <div className="surface-card p-4">
               <Input
                 placeholder="Search mentors..."
                 value={searchQuery}
@@ -130,9 +130,9 @@ export const MentorSearchPage: React.FC = () => {
         {/* Main Content */}
         <div className="lg:col-span-3">
           {/* Results Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <p className="text-gray-600">
+          <div className="mb-5 flex items-center justify-between rounded-2xl border border-slate-200/80 bg-white/80 px-4 py-3 shadow-soft">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-slate-600">
                 {isLoading ? (
                   'Loading mentors...'
                 ) : (
@@ -147,30 +147,30 @@ export const MentorSearchPage: React.FC = () => {
 
           {/* Loading State */}
           {isLoading && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               {[...Array(6)].map((_, index) => (
                 <div
                   key={index}
-                  className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 animate-pulse"
+                  className="surface-card animate-pulse p-6"
                 >
                   <div className="flex items-start gap-3 mb-4">
-                    <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
+                    <div className="h-12 w-12 rounded-full bg-slate-200"></div>
                     <div className="flex-1">
-                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                      <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+                      <div className="mb-2 h-4 rounded bg-slate-200"></div>
+                      <div className="h-3 w-2/3 rounded bg-slate-200"></div>
                     </div>
                   </div>
                   <div className="space-y-2 mb-4">
-                    <div className="h-3 bg-gray-200 rounded"></div>
-                    <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                    <div className="h-3 rounded bg-slate-200"></div>
+                    <div className="h-3 w-3/4 rounded bg-slate-200"></div>
                   </div>
                   <div className="flex gap-2 mb-4">
-                    <div className="h-6 bg-gray-200 rounded-full w-16"></div>
-                    <div className="h-6 bg-gray-200 rounded-full w-20"></div>
+                    <div className="h-6 w-16 rounded-full bg-slate-200"></div>
+                    <div className="h-6 w-20 rounded-full bg-slate-200"></div>
                   </div>
                   <div className="flex justify-between items-center">
-                    <div className="h-4 bg-gray-200 rounded w-20"></div>
-                    <div className="h-8 bg-gray-200 rounded w-24"></div>
+                    <div className="h-4 w-20 rounded bg-slate-200"></div>
+                    <div className="h-8 w-24 rounded-xl bg-slate-200"></div>
                   </div>
                 </div>
               ))}
@@ -179,8 +179,8 @@ export const MentorSearchPage: React.FC = () => {
 
           {/* No Results */}
           {!isLoading && filteredMentors.length === 0 && (
-            <div className="text-center py-12">
-              <div className="w-24 h-24 mx-auto mb-4 text-gray-300">
+            <div className="surface-card py-12 text-center">
+              <div className="mx-auto mb-4 h-24 w-24 text-slate-300">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -190,10 +190,10 @@ export const MentorSearchPage: React.FC = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <h3 className="mb-2 text-lg font-semibold text-slate-900">
                 No mentors found
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="mb-4 text-slate-600">
                 {hasActiveFilters
                   ? 'Try adjusting your filters to see more results.'
                   : 'There are no mentors available at the moment.'}
@@ -201,7 +201,7 @@ export const MentorSearchPage: React.FC = () => {
               {hasActiveFilters && (
                 <button
                   onClick={handleClearFilters}
-                  className="text-blue-600 hover:text-blue-800 font-medium"
+                  className="font-semibold text-brand-600 hover:text-brand-800"
                 >
                   Clear all filters
                 </button>

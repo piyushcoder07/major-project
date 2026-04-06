@@ -28,8 +28,6 @@ export const MentorProfileForm: React.FC<MentorProfileFormProps> = ({
 }) => {
   const [submitError, setSubmitError] = useState<string>('');
 
-  console.log('MentorProfileForm - User data received:', user);
-
   const initialValues: MentorProfileData = {
     name: user.name || '',
     expertise: Array.isArray(user.expertise) ? user.expertise.join(', ') : (user.expertise || ''),
@@ -72,7 +70,6 @@ export const MentorProfileForm: React.FC<MentorProfileFormProps> = ({
         ...values,
         expertise: values.expertise ? values.expertise.split(',').map(s => s.trim()).filter(s => s) : []
       };
-      console.log('Submitting profile data:', submitData);
       await onSubmit(submitData);
     } catch (error: any) {
       setSubmitError(error.message || 'Failed to update profile');
@@ -87,8 +84,8 @@ export const MentorProfileForm: React.FC<MentorProfileFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {submitError && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <p className="text-sm text-red-600">{submitError}</p>
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4">
+          <p className="text-sm font-medium text-red-600">{submitError}</p>
         </div>
       )}
 
@@ -149,11 +146,11 @@ export const MentorProfileForm: React.FC<MentorProfileFormProps> = ({
               name="bio"
               rows={4}
               className={`
-                block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                block w-full rounded-xl border bg-white px-3.5 py-2.5 text-slate-800 shadow-sm placeholder:text-slate-400
+                focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500
                 ${errors.bio 
-                  ? 'border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500' 
-                  : 'border-gray-300'
+                  ? 'border-red-300 text-red-900 placeholder:text-red-300 focus:ring-red-500 focus:border-red-500' 
+                  : 'border-slate-300'
                 }
               `}
               value={values.bio}
@@ -164,13 +161,13 @@ export const MentorProfileForm: React.FC<MentorProfileFormProps> = ({
             />
             <div className="flex justify-between mt-1">
               {errors.bio ? (
-                <p className="text-sm text-red-600">{errors.bio}</p>
+                <p className="text-sm font-medium text-red-600">{errors.bio}</p>
               ) : (
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   Minimum 50 characters. Be specific about your expertise and mentoring style.
                 </p>
               )}
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-slate-400">
                 {values.bio.length}/500
               </p>
             </div>

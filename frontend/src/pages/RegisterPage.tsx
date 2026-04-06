@@ -122,99 +122,109 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link
-              to="/login"
-              className="font-medium text-blue-600 hover:text-blue-500"
-            >
-              sign in to your existing account
-            </Link>
-          </p>
+    <div className="min-h-screen bg-hero-mesh px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-[calc(100vh-6rem)] w-full max-w-lg items-center">
+        <div className="w-full space-y-6">
+          <div className="text-center">
+            <div className="mx-auto mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 text-brand-700 shadow-crisp">
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4l2.4 4.8L19 11l-4.6 2.2L12 18l-2.4-4.8L5 11l4.6-2.2L12 4z" />
+              </svg>
+            </div>
+            <h2 className="text-balance text-3xl font-bold text-slate-900 sm:text-4xl">
+              Create your account
+            </h2>
+            <p className="mt-2 text-sm text-slate-600 sm:text-base">
+              Join mentors and mentees building meaningful growth together.
+            </p>
+            <p className="mt-2 text-sm text-slate-600">
+              Or{' '}
+              <Link
+                to="/login"
+                className="font-semibold text-brand-600 hover:text-brand-700"
+              >
+                sign in to your existing account
+              </Link>
+            </p>
+          </div>
+
+          <Card className="p-6 sm:p-7">
+            <form className="space-y-5" onSubmit={handleSubmit}>
+              {generalError && (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+                  {generalError}
+                </div>
+              )}
+
+              <Input
+                label="Full Name"
+                type="text"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                error={errors.name}
+                placeholder="Your full name"
+                autoComplete="name"
+                required
+              />
+
+              <Input
+                label="Email address"
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                error={errors.email}
+                placeholder="name@example.com"
+                autoComplete="email"
+                required
+              />
+
+              <Select
+                label="I want to..."
+                name="role"
+                value={form.role}
+                onChange={handleChange}
+                error={errors.role}
+                options={roleOptions}
+                placeholder="Select your role"
+                required
+              />
+
+              <PasswordInput
+                label="Password"
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+                error={errors.password}
+                placeholder="Create a password"
+                autoComplete="new-password"
+                helperText="At least 6 characters with uppercase, lowercase, and a number"
+                required
+              />
+
+              <PasswordInput
+                label="Confirm Password"
+                name="confirmPassword"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                error={errors.confirmPassword}
+                placeholder="Confirm your password"
+                autoComplete="new-password"
+                required
+              />
+
+              <Button
+                type="submit"
+                className="w-full"
+                isLoading={isLoading}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Creating account...' : 'Create account'}
+              </Button>
+            </form>
+          </Card>
         </div>
-
-        <Card>
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {generalError && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-                {generalError}
-              </div>
-            )}
-
-            <Input
-              label="Full Name"
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              error={errors.name}
-              placeholder="Enter your full name"
-              autoComplete="name"
-              required
-            />
-
-            <Input
-              label="Email address"
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              error={errors.email}
-              placeholder="Enter your email"
-              autoComplete="email"
-              required
-            />
-
-            <Select
-              label="I want to..."
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              error={errors.role}
-              options={roleOptions}
-              placeholder="Select your role"
-              required
-            />
-
-            <PasswordInput
-              label="Password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              error={errors.password}
-              placeholder="Create a password"
-              autoComplete="new-password"
-              helperText="Must contain at least 6 characters with uppercase, lowercase, and number"
-              required
-            />
-
-            <PasswordInput
-              label="Confirm Password"
-              name="confirmPassword"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              error={errors.confirmPassword}
-              placeholder="Confirm your password"
-              autoComplete="new-password"
-              required
-            />
-
-            <Button
-              type="submit"
-              className="w-full"
-              isLoading={isLoading}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Creating account...' : 'Create account'}
-            </Button>
-          </form>
-        </Card>
       </div>
     </div>
   );

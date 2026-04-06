@@ -130,14 +130,17 @@ A comprehensive mentorship platform connecting mentors and mentees for meaningfu
    ```bash
    # Backend environment
    cd backend
+   # Mac/Linux
    cp .env.example .env
+   # Windows PowerShell
+   copy .env.example .env
    # Edit .env file with your configuration
    ```
 
    **Required Environment Variables:**
    ```env
    # Database
-   DATABASE_URL="file:./dev.db"
+   DATABASE_URL="postgresql://postgres:postgres@localhost:5432/mentor_connect?schema=public"
 
    # JWT Secret (generate a secure random string)
    JWT_SECRET="your-super-secret-jwt-key"
@@ -153,7 +156,8 @@ A comprehensive mentorship platform connecting mentors and mentees for meaningfu
 4. **Database Setup**
    ```bash
    cd backend
-   npx prisma migrate dev --name init
+   npx prisma generate
+   npx prisma migrate deploy
    npx prisma db seed
    cd ..
    ```
