@@ -3,6 +3,27 @@ import { io, Socket } from 'socket.io-client';
 import { useAuth } from '../hooks/useAuth';
 import { Message } from '../types/message';
 
+const DEFAULT_RENDER_BACKEND_URL = 'https://mentor-connect-backend-piyushcoder07-20260406.onrender.com';
+
+const resolveSocketUrl = (): string => {
+  const configuredSocketUrl = import.meta.env.VITE_SOCKET_URL?.trim();
+  if (configuredSocketUrl) {
+    return configuredSocketUrl.replace(/\/+$/, '');
+  }
+
+  const configuredApiUrl = import.meta.env.VITE_API_URL?.trim();
+  if (configuredApiUrl && /^https?:\/\//i.test(configuredApiUrl)) {
+    return configuredApiUrl.replace(/\/api\/?$/i, '').replace(/\/+$/, '');
+  }
+
+  const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  if (isLocalHost) {
+    return window.location.origin;
+  }
+
+  return DEFAULT_RENDER_BACKEND_URL;
+};
+
 interface SocketContextType {
   socket: Socket | null;
   isConnected: boolean;
@@ -55,7 +76,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         return;
       }
 
-      const socketInstance = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000', {
+      const socketInstance = io(resolveSocketUrl(), {
         auth: {
           token: token
         },

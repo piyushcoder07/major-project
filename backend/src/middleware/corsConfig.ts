@@ -1,32 +1,56 @@
 import { CorsOptions } from 'cors';
-import { Request } from 'express';
+import { NextFunction, Request, Response } from 'express';
+
+const LOCAL_ORIGINS = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+];
+
+const VERCEL_PREVIEW_ORIGIN_REGEX = /^https:\/\/[a-z0-9-]+\.vercel\.app$/i;
+
+const normalizeOrigin = (origin: string): string => origin.trim().replace(/\/+$/, '');
+
+const parseConfiguredFrontendOrigins = (): string[] => {
+  const rawOrigins = process.env.FRONTEND_URL;
+  if (!rawOrigins) {
+    return [];
+  }
+
+  return rawOrigins
+    .split(',')
+    .map((origin) => normalizeOrigin(origin))
+    .filter(Boolean);
+};
+
+const getAllowedOrigins = (): string[] => {
+  const configuredOrigins = parseConfiguredFrontendOrigins();
+  return [...new Set([...configuredOrigins, ...LOCAL_ORIGINS])];
+};
+
+export const isOriginAllowed = (origin: string): boolean => {
+  const normalizedOrigin = normalizeOrigin(origin);
+  if (getAllowedOrigins().includes(normalizedOrigin)) {
+    return true;
+  }
+
+  return VERCEL_PREVIEW_ORIGIN_REGEX.test(normalizedOrigin);
+};
+
+const validateOrigin: CorsOptions['origin'] = (origin, callback) => {
+  if (!origin || isOriginAllowed(origin)) {
+    callback(null, true);
+    return;
+  }
+
+  callback(new Error('Not allowed by CORS policy'), false);
+};
 
 /**
  * Enhanced CORS configuration with security best practices
  */
 export const corsOptions: CorsOptions = {
   // Dynamic origin validation
-  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    // Allow requests with no origin (mobile apps, Postman, etc.)
-    if (!origin) {
-      return callback(null, true);
-    }
-
-    // List of allowed origins
-    const allowedOrigins = [
-      process.env.FRONTEND_URL || 'http://localhost:3000',
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-      // Add production URLs here when deploying
-    ];
-
-    // Check if the origin is in the allowed list
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS policy'), false);
-    }
-  },
+  origin: validateOrigin,
 
   // Allowed HTTP methods
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -64,18 +88,7 @@ export const corsOptions: CorsOptions = {
  * Strict CORS configuration for sensitive endpoints
  */
 export const strictCorsOptions: CorsOptions = {
-  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    // Only allow specific origins for sensitive endpoints
-    const allowedOrigins = [
-      process.env.FRONTEND_URL || 'http://localhost:3000',
-    ];
-
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Strict CORS policy violation'), false);
-    }
-  },
+  origin: validateOrigin,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -137,20 +150,10 @@ export const customCorsMiddleware = (req: Request, res: any, next: any) => {
 /**
  * Check if origin is allowed
  */
-const isOriginAllowed = (origin: string): boolean => {
-  const allowedOrigins = [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-  ];
-  
-  return allowedOrigins.includes(origin);
-};
-
 /**
  * CORS error handler
  */
-export const corsErrorHandler = (err: Error, req: Request, res: any, next: any) => {
+export const corsErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err.message.includes('CORS')) {
     console.error(`CORS Error: ${err.message}`);
     console.error(`Origin: ${req.headers.origin}`);

@@ -13,7 +13,7 @@ import ratingRoutes from './routes/ratingRoutes';
 import adminRoutes from './routes/adminRoutes';
 import { SocketManager } from './utils/socketManager';
 // import rateLimiter from './middleware/rateLimiter'; // Temporarily disabled for development
-import { getCorsOptions, customCorsMiddleware, corsErrorHandler } from './middleware/corsConfig';
+import { getCorsOptions, customCorsMiddleware, corsErrorHandler, isOriginAllowed } from './middleware/corsConfig';
 import { comprehensiveInputSanitization } from './middleware/inputSanitization';
 import { addTokenRefreshInfo, checkTokenHealth } from './middleware/tokenRefresh';
 import { suspiciousRequestMiddleware } from './utils/securityMonitor';
@@ -33,7 +33,14 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      if (!origin || isOriginAllowed(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error('Not allowed by CORS policy'));
+    },
     methods: ['GET', 'POST'],
     credentials: true,
   },

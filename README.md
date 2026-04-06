@@ -304,26 +304,45 @@ npm run lint         # Run ESLint
 
 ## 🚀 **Deployment**
 
-### **Frontend (Netlify/Vercel)**
-```bash
-cd frontend
-npm run build
-# Deploy dist/ folder
-```
+### **Zero-Touch Deploy (Render + Vercel)**
 
-### **Backend (Railway/Render/Heroku)**
-```bash
-cd backend
-npm run build
-# Deploy built application
-```
+This repository is configured for automatic deployment without post-deploy env edits:
 
-### **Environment Variables for Production:**
+- `render.yaml` (repo root) provisions backend web service + PostgreSQL database.
+- `vercel.json` (repo root) builds frontend from `frontend/` and rewrites `/api` and `/socket.io` to Render backend.
+- Backend CORS accepts configured origin(s), localhost, and Vercel preview domains.
+
+#### **Render (Backend + Database)**
+1. In Render, click **New +** → **Blueprint**.
+2. Select this GitHub repository.
+3. Deploy.
+
+Render will automatically:
+- Create PostgreSQL database.
+- Set `DATABASE_URL` from that database.
+- Generate secure JWT secrets.
+- Build and start backend.
+
+Backend URL expected by Vercel rewrites:
+- `https://mentor-connect-backend-piyushcoder07-20260406.onrender.com`
+
+#### **Vercel (Frontend)**
+1. In Vercel, click **Add New...** → **Project**.
+2. Import this same GitHub repository.
+3. Deploy (no extra build/env settings required).
+
+Vercel will automatically:
+- Use root `vercel.json`.
+- Build `frontend` using `npm run build:frontend`.
+- Route API and Socket traffic to Render backend using rewrites.
+
+### **Optional Production Variables**
+
+You do not need frontend env vars when using rewrites. If you want direct backend calls instead, set:
+
 ```env
-NODE_ENV=production
-DATABASE_URL="your-production-database-url"
-JWT_SECRET="secure-production-jwt-secret"
-FRONTEND_URL="https://your-frontend-domain.com"
+VITE_API_URL=https://mentor-connect-backend-piyushcoder07-20260406.onrender.com/api
+VITE_SOCKET_URL=https://mentor-connect-backend-piyushcoder07-20260406.onrender.com
 ```
 
 ## 🤝 **Contributing**
