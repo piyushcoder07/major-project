@@ -27,7 +27,7 @@ export const Layout: React.FC = () => {
   const handleLogout = async () => {
     await logout();
     success('Logged out', 'You have been successfully logged out.');
-    navigate('/login');
+    navigate('/');
   };
 
   const toggleMobileMenu = () => {

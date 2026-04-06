@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useFormValidation } from '../hooks/useFormValidation';
 import { useToast } from '../contexts/ToastContext';
+import { PublicNavbar } from '../components/PublicNavbar';
 import { BrandMark } from '../components/BrandMark';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -122,8 +123,10 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-hero-mesh px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mx-auto flex min-h-[calc(100vh-6rem)] w-full max-w-lg items-center">
+    <div className="min-h-screen bg-hero-mesh">
+      <PublicNavbar />
+
+      <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-lg items-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="w-full space-y-6">
           <div className="text-center">
             <div className="mx-auto mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 text-brand-700 shadow-crisp">

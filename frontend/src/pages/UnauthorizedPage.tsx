@@ -1,11 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { PublicNavbar } from '../components/PublicNavbar';
 import { Button } from '../components/ui';
 
 export const UnauthorizedPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-hero-mesh px-4 py-12">
-      <div className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-md items-center">
+    <div className="min-h-screen bg-hero-mesh">
+      <PublicNavbar />
+
+      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-md items-center px-4 py-12">
         <div className="w-full surface-card p-8 text-center sm:p-10">
           <div className="mx-auto mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-600">
             <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
