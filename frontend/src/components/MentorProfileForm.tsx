@@ -60,7 +60,8 @@ export const MentorProfileForm: React.FC<MentorProfileFormProps> = ({
     e.preventDefault();
     setSubmitError('');
 
-    if (!validateForm()) {
+    const isValid = await validateForm();
+    if (!isValid) {
       return;
     }
 

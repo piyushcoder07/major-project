@@ -20,7 +20,7 @@ export const UnauthorizedPage: React.FC = () => {
             You don't have permission to access this page.
           </p>
           
-          <Link to="/" className="mt-7 inline-flex">
+          <Link to="/app" className="mt-7 inline-flex">
             <Button>Go to Dashboard</Button>
           </Link>
         </div>

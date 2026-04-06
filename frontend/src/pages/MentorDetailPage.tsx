@@ -24,7 +24,7 @@ export const MentorDetailPage: React.FC = () => {
   useEffect(() => {
     const loadMentor = async () => {
       if (!id) {
-        navigate('/mentors');
+        navigate('/app/mentors');
         return;
       }
 
@@ -42,7 +42,7 @@ export const MentorDetailPage: React.FC = () => {
       } catch (error) {
         console.error('Failed to load mentor:', error);
         showToast('Failed to load mentor details. Please try again.');
-        navigate('/mentors');
+        navigate('/app/mentors');
       } finally {
         setIsLoading(false);
       }
@@ -57,11 +57,11 @@ export const MentorDetailPage: React.FC = () => {
 
   const handleBookingSuccess = () => {
     setShowBookingModal(false);
-    navigate('/appointments');
+    navigate('/app/appointments');
   };
 
   const handleBackToSearch = () => {
-    navigate('/mentors');
+    navigate('/app/mentors');
   };
 
   const renderStars = (rating: number) => {

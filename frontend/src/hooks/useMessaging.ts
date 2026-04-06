@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { messageService } from '../services/messageService';
 import { useSocket } from '../contexts/SocketContext';
 import { useToast } from '../contexts/ToastContext';
+import { useAuth } from './useAuth';
 import { ReadStatusManager } from '../utils/readStatusManager';
 import { Conversation, Message } from '../types/message';
 
@@ -9,16 +10,10 @@ export const useMessaging = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const { onNewMessage, offNewMessage } = useSocket();
   const { error: showError } = useToast();
-
-  // Clear conversations when component unmounts or user changes
-  useEffect(() => {
-    return () => {
-      setConversations([]);
-    };
-  }, []);
+  const { user } = useAuth();
 
   // Load conversations
   const loadConversations = useCallback(async () => {
@@ -38,7 +33,9 @@ export const useMessaging = () => {
       setConversations(data);
     } catch (err: any) {
       const errorMessage = err.message || 'Failed to load conversations';
-      console.error('DEBUG: Error loading conversations:', err);
+      if (import.meta.env.DEV) {
+        console.warn('Unable to load conversations:', err);
+      }
       setError(errorMessage);
       
       // Only show error toast if it's not an authentication error
@@ -58,9 +55,7 @@ export const useMessaging = () => {
     const handleNewMessage = (message: Message) => {
       setConversations(prev => prev.map(conv => {
         if (conv.appointmentId === message.appointmentId) {
-          // Only increment unread count if message is not from current user
-          const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-          const shouldIncrement = message.fromId !== currentUser.id;
+          const shouldIncrement = message.fromId !== user?.id;
           
           return {
             ...conv,
@@ -77,7 +72,7 @@ export const useMessaging = () => {
     return () => {
       offNewMessage(handleNewMessage);
     };
-  }, [onNewMessage, offNewMessage]);
+  }, [offNewMessage, onNewMessage, user?.id]);
 
   // Mark conversation as read and update read status
   const markAsRead = useCallback(async (appointmentId: string) => {
@@ -94,7 +89,9 @@ export const useMessaging = () => {
           : conv
       ));
     } catch (err: any) {
-      console.error('Failed to mark as read:', err);
+      if (import.meta.env.DEV) {
+        console.warn('Unable to mark conversation as read:', err);
+      }
     }
   }, []);
 

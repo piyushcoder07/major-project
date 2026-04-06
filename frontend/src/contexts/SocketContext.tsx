@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useAuth } from '../hooks/useAuth';
 import { Message } from '../types/message';
+import { isJwtExpired } from '../utils/jwt';
 
 const DEFAULT_RENDER_BACKEND_URL = 'https://mentor-connect-backend-piyushcoder07-20260406.onrender.com';
 
@@ -45,108 +46,83 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (user) {
-      const token = localStorage.getItem('token');
-      
-      // Validate token before attempting socket connection
-      if (!token) {
-        console.warn('No token available for socket connection');
-        return;
-      }
-
-      // Basic token format validation
-      const tokenParts = token.split('.');
-      if (tokenParts.length !== 3) {
-        console.warn('Invalid token format for socket connection');
-        return;
-      }
-
-      // Additional validation: check if token payload can be decoded
-      try {
-        const payload = JSON.parse(atob(tokenParts[1]));
-        const currentTime = Date.now() / 1000;
-        
-        // Don't connect if token is expired
-        if (payload.exp && payload.exp < currentTime) {
-          console.warn('Token expired, not connecting socket');
-          return;
+    if (!user) {
+      setSocket((previousSocket) => {
+        if (previousSocket) {
+          previousSocket.disconnect();
         }
-      } catch (decodeError) {
-        console.warn('Failed to decode token payload for socket connection:', decodeError);
-        return;
-      }
-
-      const socketInstance = io(resolveSocketUrl(), {
-        auth: {
-          token: token
-        },
-        transports: ['websocket', 'polling'],
-        reconnection: true,
-        reconnectionAttempts: 3,
-        reconnectionDelay: 1000
+        return null;
       });
-
-      socketInstance.on('connect', () => {
-        console.log('Socket connected');
-        setIsConnected(true);
-      });
-
-      socketInstance.on('disconnect', () => {
-        console.log('Socket disconnected');
-        setIsConnected(false);
-      });
-
-      socketInstance.on('connect_error', (error) => {
-        console.error('Socket connection error:', error);
-        setIsConnected(false);
-        
-        // If it's an authentication error, clear the token
-        if (error.message?.includes('authentication') || error.message?.includes('token')) {
-          console.warn('Socket authentication failed, clearing token');
-          localStorage.removeItem('token');
-        }
-      });
-
-      setSocket(socketInstance);
-
-      return () => {
-        socketInstance.disconnect();
-        setSocket(null);
-        setIsConnected(false);
-      };
-    } else {
-      // If no user, clean up socket connection
-      if (socket) {
-        socket.disconnect();
-        setSocket(null);
-        setIsConnected(false);
-      }
+      setIsConnected(false);
+      return;
     }
+
+    const token = localStorage.getItem('token');
+    if (!token || isJwtExpired(token)) {
+      setIsConnected(false);
+      return;
+    }
+
+    const socketInstance = io(resolveSocketUrl(), {
+      auth: { token },
+      transports: ['websocket', 'polling'],
+      withCredentials: true,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+    });
+
+    socketInstance.on('connect', () => {
+      setIsConnected(true);
+      if (import.meta.env.DEV) {
+        console.info('Socket connected');
+      }
+    });
+
+    socketInstance.on('disconnect', () => {
+      setIsConnected(false);
+      if (import.meta.env.DEV) {
+        console.info('Socket disconnected');
+      }
+    });
+
+    socketInstance.on('connect_error', (error) => {
+      setIsConnected(false);
+      if (import.meta.env.DEV) {
+        console.warn('Socket connection issue:', error?.message || error);
+      }
+
+      const message = (error?.message || '').toLowerCase();
+      if (message.includes('auth') || message.includes('token') || message.includes('jwt')) {
+        localStorage.removeItem('token');
+      }
+    });
+
+    setSocket(socketInstance);
+
+    return () => {
+      socketInstance.removeAllListeners();
+      socketInstance.disconnect();
+      setSocket(null);
+      setIsConnected(false);
+    };
   }, [user]);
 
-  const onNewMessage = (callback: (message: Message) => void) => {
-    if (socket) {
-      socket.on('new-message', callback);
-    }
-  };
+  const onNewMessage = useCallback((callback: (message: Message) => void) => {
+    socket?.on('new-message', callback);
+  }, [socket]);
 
-  const offNewMessage = (callback: (message: Message) => void) => {
-    if (socket) {
-      socket.off('new-message', callback);
-    }
-  };
+  const offNewMessage = useCallback((callback: (message: Message) => void) => {
+    socket?.off('new-message', callback);
+  }, [socket]);
 
-  const joinAppointmentRoom = (appointmentId: string) => {
-    if (socket) {
-      socket.emit('join-appointment', appointmentId);
-    }
-  };
+  const joinAppointmentRoom = useCallback((appointmentId: string) => {
+    socket?.emit('join-appointment', appointmentId);
+  }, [socket]);
 
-  const leaveAppointmentRoom = (appointmentId: string) => {
-    if (socket) {
-      socket.emit('leave-appointment', appointmentId);
-    }
-  };
+  const leaveAppointmentRoom = useCallback((appointmentId: string) => {
+    socket?.emit('leave-appointment', appointmentId);
+  }, [socket]);
 
   const value: SocketContextType = {
     socket,
@@ -154,14 +130,10 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     onNewMessage,
     offNewMessage,
     joinAppointmentRoom,
-    leaveAppointmentRoom
+    leaveAppointmentRoom,
   };
 
-  return (
-    <SocketContext.Provider value={value}>
-      {children}
-    </SocketContext.Provider>
-  );
+  return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
 };
 
 export const useSocket = (): SocketContextType => {

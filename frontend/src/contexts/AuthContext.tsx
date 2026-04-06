@@ -1,8 +1,32 @@
-import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { User, AuthContextType, LoginCredentials, RegisterData } from '../types/auth';
 import { authService } from '../services/authService';
+import { isJwtExpired } from '../utils/jwt';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+const clearStoredAuth = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('user');
+};
+
+const isUnauthorizedError = (error: unknown): boolean => {
+  if (!error || typeof error !== 'object') {
+    return false;
+  }
+
+  const typedError = error as {
+    status?: number;
+    code?: string;
+    response?: { status?: number; data?: { error?: { code?: string } } };
+  };
+
+  const status = typedError.status ?? typedError.response?.status;
+  const code = typedError.code ?? typedError.response?.data?.error?.code;
+
+  return status === 401 || code === 'UNAUTHORIZED' || code === 'INVALID_TOKEN';
+};
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAuthContext = () => {
@@ -20,218 +44,122 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [isInitializing, setIsInitializing] = useState(false);
-  const initializeAuthOnce = useRef(false);
 
-  // Check for token expiration and auto-logout
-  useEffect(() => {
-    const checkTokenExpiration = () => {
-      const token = localStorage.getItem('token');
-      
-      // Only check expiration if we have both a token and a user (fully initialized)
-      // and we're not currently in the middle of initializing
-      if (token && user && isInitialized && !isInitializing) {
-        try {
-          // Validate token format before attempting to decode
-          const parts = token.split('.');
-          if (parts.length !== 3) {
-            console.error('Invalid token format during expiration check');
-            logout(); // Use logout function instead of direct setUser(null)
-            return;
-          }
+  const clearAuth = useCallback(() => {
+    clearStoredAuth();
+    setUser(null);
+  }, []);
 
-          // Check if the payload is valid base64
-          try {
-            const payload = JSON.parse(atob(parts[1]));
-            const currentTime = Date.now() / 1000;
-            
-            // Auto-logout 5 minutes before token expires
-            if (payload.exp && payload.exp - 300 < currentTime) {
-              console.log('Token expiring soon, logging out...');
-              logout();
-            }
-          } catch (decodeError) {
-            console.error('Error decoding token payload during expiration check:', decodeError);
-            logout(); // Use logout function instead of direct cleanup
-          }
-        } catch (error) {
-          console.error('Error checking token expiration:', error);
-          logout(); // Use logout function instead of direct cleanup
-        }
-      }
-    };
-
-    // Only start checking expiration after initialization is complete
-    if (isInitialized && !isInitializing) {
-      // Check token expiration every minute
-      const interval = setInterval(checkTokenExpiration, 60000);
-      
-      // Also check immediately if we have a user
-      if (user) {
-        checkTokenExpiration();
-      }
-      
-      return () => clearInterval(interval);
+  const logout = useCallback(async () => {
+    try {
+      await authService.logout();
+    } catch {
+      // Ignore logout API failures and clear local auth state anyway.
+    } finally {
+      clearAuth();
     }
-  }, [user, isInitialized, isInitializing]);
+  }, [clearAuth]);
 
   useEffect(() => {
+    let isMounted = true;
+
     const initializeAuth = async () => {
-      // Prevent multiple initializations using ref and state
-      if (isInitialized || isInitializing || initializeAuthOnce.current) {
+      const token = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
+
+      if (!token || !storedUser || isJwtExpired(token)) {
+        clearStoredAuth();
+        if (isMounted) {
+          setUser(null);
+          setIsLoading(false);
+        }
         return;
       }
 
-      initializeAuthOnce.current = true;
-      setIsInitializing(true);
-      console.log('Starting auth initialization...');
+      try {
+        const parsedUser = JSON.parse(storedUser) as User;
+        if (isMounted) {
+          setUser(parsedUser);
+        }
+      } catch {
+        clearStoredAuth();
+        if (isMounted) {
+          setUser(null);
+          setIsLoading(false);
+        }
+        return;
+      }
 
       try {
-        const token = localStorage.getItem('token');
-        const storedUser = localStorage.getItem('user');
-        
-        if (!token || !storedUser) {
-          console.log('No token or stored user found, skipping initialization');
-          setIsLoading(false);
-          setIsInitialized(true);
-          setIsInitializing(false);
-          return;
-        }
-
-        // Check if token is expired (basic check)
-        try {
-          // Validate token format before attempting to decode
-          const parts = token.split('.');
-          if (parts.length !== 3) {
-            console.error('Invalid token format during initialization');
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            setIsLoading(false);
-            setIsInitialized(true);
-            setIsInitializing(false);
-            return;
-          }
-
-          const payload = JSON.parse(atob(parts[1]));
-          const currentTime = Date.now() / 1000;
-          
-          if (payload.exp && payload.exp < currentTime) {
-            // Token is expired
-            console.log('Token expired during initialization, clearing stored data');
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            setIsLoading(false);
-            setIsInitialized(true);
-            setIsInitializing(false);
-            return;
-          }
-        } catch (tokenError) {
-          // Invalid token format
-          console.error('Invalid token during initialization:', tokenError);
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          setIsLoading(false);
-          setIsInitialized(true);
-          setIsInitializing(false);
-          return;
-        }
-
-        // Use stored user data immediately for better UX
-        try {
-          const userData = JSON.parse(storedUser);
-          setUser(userData);
-          console.log('Restored user from localStorage:', userData.name);
-          
-          // Verify with server in background to ensure data is current
-          authService.getCurrentUser().then(freshUserData => {
-            // Only update if we're still in the same initialization cycle
-            if (isInitialized && !isInitializing) {
-              setUser(freshUserData);
-              localStorage.setItem('user', JSON.stringify(freshUserData));
-              console.log('Refreshed user data from server');
-            }
-          }).catch(error => {
-            console.warn('Failed to refresh user data, clearing invalid auth:', error);
-            // If server verification fails with auth error, clear everything
-            if (error.status === 401 || error.code === 'UNAUTHORIZED') {
-              localStorage.removeItem('token');
-              localStorage.removeItem('user');
-              setUser(null);
-              console.log('Cleared invalid authentication data');
-            } else {
-              console.warn('Keeping stored data due to non-auth error:', error);
-            }
-          });
-        } catch (userParseError) {
-          console.error('Failed to parse stored user data:', userParseError);
-          // If stored data is corrupted, try to get fresh data from server
-          try {
-            const userData = await authService.getCurrentUser();
-            setUser(userData);
-            localStorage.setItem('user', JSON.stringify(userData));
-            console.log('Fetched fresh user data from server');
-          } catch (serverError) {
-            console.error('Failed to get user data from server:', serverError);
-            // Clear everything if both stored and server data fail
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            setUser(null);
-          }
+        const freshUserData = await authService.getCurrentUser();
+        localStorage.setItem('user', JSON.stringify(freshUserData));
+        if (isMounted) {
+          setUser(freshUserData);
         }
       } catch (error) {
-        console.error('Failed to initialize auth:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setUser(null);
+        if (isUnauthorizedError(error)) {
+          clearStoredAuth();
+          if (isMounted) {
+            setUser(null);
+          }
+        } else if (import.meta.env.DEV) {
+          console.warn('Unable to refresh user profile during initialization.', error);
+        }
       } finally {
-        setIsLoading(false);
-        setIsInitialized(true);
-        setIsInitializing(false);
-        console.log('Auth initialization completed');
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
-    initializeAuth();
-  }, [isInitialized, isInitializing]);
+    void initializeAuth();
 
-  const login = async (credentials: LoginCredentials) => {
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      const token = localStorage.getItem('token');
+      if (!token || isJwtExpired(token, 300)) {
+        void logout();
+      }
+    }, 60000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [user, logout]);
+
+  const login = useCallback(async (credentials: LoginCredentials) => {
     const response = await authService.login(credentials);
     localStorage.setItem('token', response.token);
     if (response.refreshToken) {
       localStorage.setItem('refreshToken', response.refreshToken);
     }
-    localStorage.setItem('user', JSON.stringify(response.user)); // Store user data for persistence
+    localStorage.setItem('user', JSON.stringify(response.user));
     setUser(response.user);
-  };
+  }, []);
 
-  const register = async (data: RegisterData) => {
+  const register = useCallback(async (data: RegisterData) => {
     const response = await authService.register(data);
     localStorage.setItem('token', response.token);
     if (response.refreshToken) {
       localStorage.setItem('refreshToken', response.refreshToken);
     }
-    localStorage.setItem('user', JSON.stringify(response.user)); // Store user data for persistence
+    localStorage.setItem('user', JSON.stringify(response.user));
     setUser(response.user);
-  };
+  }, []);
 
-  const logout = async () => {
-    try {
-      await authService.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('user'); // Clear user data
-      setUser(null);
-    }
-  };
-
-  const updateUser = (updatedUser: User) => {
+  const updateUser = useCallback((updatedUser: User) => {
     setUser(updatedUser);
-    localStorage.setItem('user', JSON.stringify(updatedUser)); // Persist user updates
-  };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  }, []);
 
   const value: AuthContextType = {
     user,

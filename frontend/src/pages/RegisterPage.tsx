@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useFormValidation } from '../hooks/useFormValidation';
 import { useToast } from '../contexts/ToastContext';
+import { BrandMark } from '../components/BrandMark';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { PasswordInput } from '../components/ui/PasswordInput';
@@ -75,8 +76,9 @@ export const RegisterPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
+
+    const isValid = await validateForm();
+    if (!isValid) {
       return;
     }
 
@@ -91,10 +93,8 @@ export const RegisterPage: React.FC = () => {
         role: form.role as 'MENTOR' | 'MENTEE',
       });
       success('Account created!', 'Welcome to Mentor Connect. Your account has been created successfully.');
-      navigate('/', { replace: true });
+      navigate('/app', { replace: true });
     } catch (error) {
-      console.error('Registration error:', error);
-      
       if (error instanceof ApiException) {
         switch (error.code) {
           case 'EMAIL_ALREADY_EXISTS':
@@ -127,9 +127,7 @@ export const RegisterPage: React.FC = () => {
         <div className="w-full space-y-6">
           <div className="text-center">
             <div className="mx-auto mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 text-brand-700 shadow-crisp">
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4l2.4 4.8L19 11l-4.6 2.2L12 18l-2.4-4.8L5 11l4.6-2.2L12 4z" />
-              </svg>
+                <BrandMark className="h-6 w-6" />
             </div>
             <h2 className="text-balance text-3xl font-bold text-slate-900 sm:text-4xl">
               Create your account

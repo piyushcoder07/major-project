@@ -31,18 +31,6 @@ export const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
     try {
       // Construct datetime with simple local time (no timezone conversion)
       const datetime = `${selectedDate}T${selectedSlot.startTime}:00`;
-      const appointmentDateTime = new Date(datetime);
-      
-      console.log('🔍 Booking appointment with:', {
-        mentor: mentor.name,
-        mentorId: mentor.id,
-        selectedDate,
-        selectedSlot,
-        constructedDatetime: datetime,
-        localDateTime: appointmentDateTime.toString(),
-        dayOfWeek: appointmentDateTime.toLocaleDateString('en-US', { weekday: 'long' }),
-        time: appointmentDateTime.toTimeString().slice(0, 5)
-      });
       
       await AppointmentService.createAppointment({
         mentorId: mentor.id,
@@ -52,7 +40,6 @@ export const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
       showSuccess('Appointment request sent successfully!');
       onBookingSuccess?.();
     } catch (error: any) {
-      console.error('❌ Appointment booking error:', error);
       showError(error.message || 'Failed to book appointment');
     } finally {
       setIsLoading(false);
@@ -89,14 +76,6 @@ export const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
 
   const availableDates = getNextWeekDates();
   const availableSlots = mentor.availabilitySlots || [];
-
-  // Add logging for debugging
-  console.log('📋 Mentor availability data:', {
-    mentorName: mentor.name,
-    mentorId: mentor.id,
-    availabilitySlots: availableSlots,
-    availableDates: availableDates
-  });
 
   const getSlotsForSelectedDate = () => {
     if (!selectedDate) return [];
@@ -147,9 +126,9 @@ export const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
             Select Time Slot
           </label>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
-            {getSlotsForSelectedDate().map((slot, index) => (
+            {getSlotsForSelectedDate().map((slot) => (
               <button
-                key={index}
+                key={`${slot.day}-${slot.startTime}-${slot.endTime}`}
                 onClick={() => setSelectedSlot(slot)}
                 className={`p-3 text-sm border rounded-lg transition-colors ${
                   selectedSlot === slot

@@ -162,6 +162,20 @@
   .animate-toastSlideUp {
     animation: toastSlideUp 0.22s ease-out;
   }
+
+  .animate-float-soft {
+    animation: floatSoft 6s ease-in-out infinite;
+  }
+
+  .animate-float-soft-delayed {
+    animation: floatSoftReverse 7s ease-in-out infinite;
+    animation-delay: 0.55s;
+  }
+
+  .animate-draw-path {
+    animation: drawPath 1.7s ease forwards;
+    animation-delay: 0.35s;
+  }
 }
 
 @keyframes fadeIn {
@@ -224,6 +238,32 @@
   }
   50% {
     opacity: 0.72;
+  }
+}
+
+@keyframes floatSoft {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes floatSoftReverse {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes drawPath {
+  to {
+    stroke-dashoffset: 0;
   }
 }
 

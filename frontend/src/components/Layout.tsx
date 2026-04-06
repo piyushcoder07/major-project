@@ -3,6 +3,7 @@ import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../contexts/ToastContext';
 import { useMessaging } from '../hooks/useMessaging';
+import { BrandMark } from './BrandMark';
 
 export const Layout: React.FC = () => {
   const { user, logout } = useAuth();
@@ -49,11 +50,9 @@ export const Layout: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-[4.5rem] justify-between">
             <div className="flex items-center">
-              <Link to="/" className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 transition-colors hover:bg-brand-50">
+              <Link to="/app" className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 transition-colors hover:bg-brand-50">
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-brand-700">
-                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4l2.4 4.8L19 11l-4.6 2.2L12 18l-2.4-4.8L5 11l4.6-2.2L12 4z" />
-                  </svg>
+                  <BrandMark className="h-4 w-4" />
                 </span>
                 <span className="font-display text-xl font-semibold tracking-tight text-slate-900">Mentor Connect</span>
               </Link>
@@ -64,14 +63,14 @@ export const Layout: React.FC = () => {
                 {/* Desktop Navigation */}
                 <div className="hidden items-center space-x-1 md:flex">
                   <Link
-                    to="/profile"
+                    to="/app/profile"
                     className="rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900"
                   >
                     Profile
                   </Link>
                   {user.role !== 'ADMIN' && (
                     <Link
-                      to="/appointments"
+                      to="/app/appointments"
                       className="rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900"
                     >
                       Appointments
@@ -79,7 +78,7 @@ export const Layout: React.FC = () => {
                   )}
                   {user.role !== 'ADMIN' && (
                     <Link
-                      to="/messages"
+                      to="/app/messages"
                       onClick={handleMessagesClick}
                       className="relative rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900"
                     >
@@ -93,7 +92,7 @@ export const Layout: React.FC = () => {
                   )}
                   {user.role === 'MENTEE' && (
                     <Link
-                      to="/mentors"
+                      to="/app/mentors"
                       className="rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900"
                     >
                       Find Mentors
@@ -101,7 +100,7 @@ export const Layout: React.FC = () => {
                   )}
                   {user.role === 'ADMIN' && (
                     <Link
-                      to="/admin"
+                      to="/app/admin"
                       className="rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900"
                     >
                       Admin Panel
@@ -128,7 +127,7 @@ export const Layout: React.FC = () => {
                   <button
                     onClick={toggleMobileMenu}
                     className="inline-flex items-center justify-center rounded-xl border border-slate-200/80 bg-white/90 p-2 text-slate-500 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-brand-500"
-                    aria-expanded="false"
+                    aria-expanded={isMobileMenuOpen}
                   >
                     <span className="sr-only">Open main menu</span>
                     {!isMobileMenuOpen ? (
@@ -158,7 +157,7 @@ export const Layout: React.FC = () => {
                 </div>
                 
                 <Link
-                  to="/profile"
+                  to="/app/profile"
                   className="mobile-nav-item"
                   onClick={closeMobileMenu}
                 >
@@ -166,7 +165,7 @@ export const Layout: React.FC = () => {
                 </Link>
                 {user.role !== 'ADMIN' && (
                   <Link
-                    to="/appointments"
+                    to="/app/appointments"
                     className="mobile-nav-item"
                     onClick={closeMobileMenu}
                   >
@@ -175,7 +174,7 @@ export const Layout: React.FC = () => {
                 )}
                 {user.role !== 'ADMIN' && (
                   <Link
-                    to="/messages"
+                    to="/app/messages"
                     className="mobile-nav-item flex items-center justify-between"
                     onClick={() => {
                       handleMessagesClick();
@@ -192,7 +191,7 @@ export const Layout: React.FC = () => {
                 )}
                 {user.role === 'MENTEE' && (
                   <Link
-                    to="/mentors"
+                    to="/app/mentors"
                     className="mobile-nav-item"
                     onClick={closeMobileMenu}
                   >
@@ -201,7 +200,7 @@ export const Layout: React.FC = () => {
                 )}
                 {user.role === 'ADMIN' && (
                   <Link
-                    to="/admin"
+                    to="/app/admin"
                     className="mobile-nav-item"
                     onClick={closeMobileMenu}
                   >

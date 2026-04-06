@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ToastProvider } from './contexts/ToastContext';
 import { SocketProvider } from './contexts/SocketContext';
@@ -7,7 +8,9 @@ import { Layout } from './components/Layout';
 import { ToastContainer } from './components/ui/Toast';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ToastErrorBoundary } from './components/ToastErrorBoundary';
+import { useAuth } from './hooks/useAuth';
 import {
+  LandingPage,
   LoginPage,
   RegisterPage,
   DashboardPage,
@@ -19,6 +22,40 @@ import {
   MessagingPage,
   AdminPage,
 } from './pages';
+
+const FullPageLoader: React.FC = () => {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="surface-card flex items-center gap-3 px-5 py-4 text-sm font-semibold text-slate-700">
+        <span className="spinner"></span>
+        Loading Mentor Connect...
+      </div>
+    </div>
+  );
+};
+
+const GuestOnlyRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <FullPageLoader />;
+  }
+
+  if (user) {
+    return <Navigate to="/app" replace />;
+  }
+
+  return <>{children}</>;
+};
+
+const LegacyMentorDetailRedirect: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  if (!id) {
+    return <Navigate to="/app/mentors" replace />;
+  }
+
+  return <Navigate to={`/app/mentors/${id}`} replace />;
+};
 
 function App() {
   return (
@@ -35,13 +72,28 @@ function App() {
               >
                 <Routes>
                   {/* Public routes */}
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/" element={<LandingPage />} />
+                  <Route
+                    path="/login"
+                    element={
+                      <GuestOnlyRoute>
+                        <LoginPage />
+                      </GuestOnlyRoute>
+                    }
+                  />
+                  <Route
+                    path="/register"
+                    element={
+                      <GuestOnlyRoute>
+                        <RegisterPage />
+                      </GuestOnlyRoute>
+                    }
+                  />
                   <Route path="/unauthorized" element={<UnauthorizedPage />} />
                   
                   {/* Protected routes */}
                   <Route
-                    path="/"
+                    path="/app"
                     element={
                       <ProtectedRoute>
                         <Layout />
@@ -64,6 +116,15 @@ function App() {
                     />
                     {/* Additional protected routes will be added in future tasks */}
                   </Route>
+
+                  {/* Legacy route compatibility */}
+                  <Route path="/dashboard" element={<Navigate to="/app" replace />} />
+                  <Route path="/profile" element={<Navigate to="/app/profile" replace />} />
+                  <Route path="/mentors" element={<Navigate to="/app/mentors" replace />} />
+                  <Route path="/mentors/:id" element={<LegacyMentorDetailRedirect />} />
+                  <Route path="/appointments" element={<Navigate to="/app/appointments" replace />} />
+                  <Route path="/messages" element={<Navigate to="/app/messages" replace />} />
+                  <Route path="/admin" element={<Navigate to="/app/admin" replace />} />
                   
                   {/* Catch all route */}
                   <Route path="*" element={<Navigate to="/" replace />} />

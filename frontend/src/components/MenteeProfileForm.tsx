@@ -55,7 +55,8 @@ export const MenteeProfileForm: React.FC<MenteeProfileFormProps> = ({
     e.preventDefault();
     setSubmitError('');
 
-    if (!validateForm()) {
+    const isValid = await validateForm();
+    if (!isValid) {
       return;
     }
 

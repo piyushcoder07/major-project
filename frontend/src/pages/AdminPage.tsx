@@ -14,9 +14,8 @@ export const AdminPage: React.FC = () => {
     { id: 'appointments' as AdminTab, label: 'Appointments' },
   ];
 
-  const handleUserAction = (userId: string, action: string) => {
-    console.log(`User ${userId} ${action}ed`);
-    // Additional logging or analytics can be added here
+  const handleUserAction = (_userId: string, _action: string) => {
+    // Hook for future telemetry/analytics integrations.
   };
 
   return (

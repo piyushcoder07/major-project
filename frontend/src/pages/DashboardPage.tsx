@@ -30,7 +30,7 @@ export const DashboardPage: React.FC = () => {
               <p className="mb-4 mt-2 text-sm text-slate-600">
                 Browse and connect with experienced mentors in your field of interest
               </p>
-              <Link to="/mentors">
+              <Link to="/app/mentors">
                 <Button className="w-full">
                   Browse Mentors
                 </Button>
